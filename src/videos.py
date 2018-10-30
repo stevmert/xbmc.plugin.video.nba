@@ -180,7 +180,7 @@ def videoPlay():
 
     xml = parseString(str(content))
     video_url = xml.getElementsByTagName("path")[0].childNodes[0].nodeValue
-    video_url = getGameUrlWithBitrate(video_url, "video")
+    video_url = getGameUrlWithBitrate_Old(video_url, "video")
     log("videoPlay: video url is %s" % video_url, xbmc.LOGDEBUG)
 
     #remove query string

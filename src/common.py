@@ -20,6 +20,9 @@ def updateFavTeam():
                 xbmc.log(msg="fav_team_abbrs set to %s" % str(vars.fav_team_abbrs), level=xbmc.LOGWARNING)
 
 def getGameUrlWithBitrate(url, video_type):
+    return url
+
+def getGameUrlWithBitrate_Old(url, video_type):
     if vars.target_video_height == -1:
         return "%s|User-Agent=%s" % (url, vars.useragent)
 

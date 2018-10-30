@@ -90,7 +90,7 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
     selected_video_url = ''
     if video_type == "live":
         if '.mpd' in url:
-            selected_video_url = url
+            selected_video_url = common.getGameUrlWithBitrate(url, video_type)
         else:
             # transform the url
             match = re.search('(https?)://([^:]+)/([^?]+?)\?(.+)$', url)
@@ -105,18 +105,17 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
             utils.log("live cookie: %s %s" % (querystring, livecookies), xbmc.LOGDEBUG)
 
             url = "%s://%s/%s?%s" % (protocol, domain, arguments, querystring)
-            url = common.getGameUrlWithBitrate(url, video_type)
+            url = common.getGameUrlWithBitrate_Old(url, video_type)
 
             selected_video_url = "%s&Cookie=%s" % (url, livecookiesencoded)
     else:
         # Archive and condensed flow: We now work with HLS.
         # The cookies are already in the URL and the server will supply them to ffmpeg later.
         if '.mpd' in url:
-            selected_video_url = url
-        else:
             selected_video_url = common.getGameUrlWithBitrate(url, video_type)
-        
-        
+        else:
+            selected_video_url = common.getGameUrlWithBitrate_Old(url, video_type)
+
     if selected_video_url:
         utils.log("the url of video %s is %s" % (video_id, selected_video_url), xbmc.LOGDEBUG)
 
