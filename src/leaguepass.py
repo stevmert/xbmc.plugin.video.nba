@@ -1,7 +1,7 @@
 from datetime import date
 from datetime import timedelta
 import urllib
-import xbmc,xbmcplugin,xbmcgui,xbmcaddon
+import xbmc, xbmcplugin, xbmcgui, xbmcaddon
 import sys
 
 from utils import *
@@ -12,7 +12,9 @@ from nbatvlive import LiveTV
 from favteam import *
 import vars
 
-log("Chosen quality_id %d and target_video_height %d" % (vars.quality_id, vars.target_video_height))
+utils.log("Chosen quality_id: %d" % vars.quality_id)
+utils.log("...mapped to target_bitrate: %d (mpd)" % vars.target_bitrate)
+utils.log("...mapped to target_video_height: %d (old)" % vars.target_video_height)
 
 def mainMenu():
     if isLiveUsable():
