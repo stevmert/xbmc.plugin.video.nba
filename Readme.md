@@ -8,7 +8,7 @@
 
 This [XBMC](http://xbmc.org/) plugin features:
 
-* Archive and condensed games for the current NBA season and previous seasons, starting from 2012/2013
+* Archive and condensed games for the current NBA season. [Games from previous seasons are no longer included (apparently you can purchase each for $8)](https://www.reddit.com/r/nba/comments/9wsoes/the_nba_has_quietly_removed_access_to_previous/)
 * Home and Away feeds for archive games
 * Highlights and Top Plays
 * NBA TV live (League Pass Premium is required)
