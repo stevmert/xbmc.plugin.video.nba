@@ -12,10 +12,6 @@ from nbatvlive import LiveTV
 from favteam import *
 import vars
 
-utils.log("Chosen quality_id: %d" % vars.quality_id)
-utils.log("...mapped to target_bitrate: %d (mpd)" % vars.target_bitrate)
-utils.log("...mapped to target_video_height: %d (old)" % vars.target_video_height)
-
 def mainMenu():
     if isLiveUsable():
         addListItem('Live games', 'live', 'live','', True)

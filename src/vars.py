@@ -19,22 +19,8 @@ use_local_timezone = json.loads(settings.getSetting(id="local_timezone"))
 show_cameras = json.loads(settings.getSetting(id="cameras"))
 useragent = "iTunes-AppleTV/4.1"
 
-# Map the quality_id to a bitrate (mpd) or a video height (old)
-quality_id = int(settings.getSetting(id="quality_id"))
-bitrates_per_quality = [-1, 10000, 4500, 3000, 1600, 800, 400]
-video_heights_per_quality = [-1, 72060, 72060, 720, 540, 360, 360]
-target_bitrate = bitrates_per_quality[quality_id]
-target_video_height = video_heights_per_quality[quality_id]
-
 cache = StorageServer.StorageServer("nbaleaguepass", 1)
 cache.table_name = "nbaleaguepass"
-
-# Delete the video urls cached if the video quality setting has changed
-if cache.get("target_bitrate") != str(target_bitrate) or cache.get("target_video_height") != str(target_video_height):
-    cache.delete("video_%")
-    cache.set("target_bitrate", str(target_bitrate))
-    cache.set("target_video_height", str(target_video_height))
-    print "deleting video url cache"
 
 cookies = ''
 player_id = binascii.b2a_hex(os.urandom(16))

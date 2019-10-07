@@ -232,7 +232,7 @@ class LiveTV:
                 for streamdata in streamdata_list:
                     video_height = streamdata.getElementsByTagName("video")[0].attributes["height"].value
 
-                    if int(video_height) == vars.target_video_height:
+                    if int(video_height) == vars.target_video_height: # TODO
                         selected_video_path = streamdata.attributes["url"].value
                         http_servers = streamdata.getElementsByTagName("httpserver")
 

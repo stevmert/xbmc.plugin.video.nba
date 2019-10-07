@@ -28,10 +28,6 @@ msgctxt "#50002"
 msgid "Password"
 msgstr "סיסמה"
 
-msgctxt "#50003"
-msgid "Video quality"
-msgstr "איכות וידאו מיו-טיוב"
-
 msgctxt "#50004"
 msgid "Show scores"
 msgstr "הצג ניקוד"
