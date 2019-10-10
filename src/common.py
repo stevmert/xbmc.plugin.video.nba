@@ -24,10 +24,11 @@ def getGameUrlWithBitrate(url, video_type):
 
 def getFanartImage():
     # get the feed url
-    feed_url = "http://smb.cdnak.neulion.com/fs/nba/feeds/common/dl.js"
-    req = urllib2.Request(feed_url, None);
+    feed_url = "https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds/common/dl.js"
+    xbmc.log(feed_url, xbmc.LOGINFO)
+    req = urllib2.Request(feed_url, None)
     response = str(urllib2.urlopen(req).read())
-    
+
     try:
         # Parse
         js = json.loads(response[response.find("{"):])
@@ -35,10 +36,11 @@ def getFanartImage():
 
         # for now only chose the first fanart
         first_id = dl[0]["id"]
-        fanart_image = ("http://smb.cdnllnwnl.neulion.com/u/nba/nba/thumbs/dl/%s_pc.jpg" % first_id)
+        fanart_image = "https://nbadsdmt.akamaized.net/media/nba/nba/thumbs/dl/%s_pc.jpg" % first_id
+        xbmc.log(fanart_image, xbmc.LOGINFO)
         vars.settings.setSetting("fanart_image", fanart_image)
     except:
-        #I don't care
+        # I don't care
         pass
 
 def getDate( default= '', heading='Please enter date (YYYY/MM/DD)', hidden=False ):
@@ -47,7 +49,7 @@ def getDate( default= '', heading='Please enter date (YYYY/MM/DD)', hidden=False
     keyboard = xbmc.Keyboard( default, heading, hidden )
     keyboard.doModal()
     ret = datetime.date.today()
-    if ( keyboard.isConfirmed() ):
+    if keyboard.isConfirmed():
         sDate = unicode( keyboard.getText(), "utf-8" )
         temp = sDate.split("/")
         ret = datetime.date(int(temp[0]),  int(temp[1]), int(temp[2]))
