@@ -26,16 +26,14 @@ class LiveTV:
             date = nowEST().replace(hour=4, minute=0, second=0)
 
         log("date for episodes: %s (from %s)" % (date, nowEST()), xbmc.LOGDEBUG)
-
-        schedule = 'http://smb.cdnak.neulion.com/fs/nba/feeds/epg/2016/%s_%s.js?t=%d' % (
+        schedule = 'https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds/epg/2019/%s_%s.js?t=%d' % (
             date.month, date.day, time.time())
         log('Requesting %s' % schedule, xbmc.LOGDEBUG)
 
         now_timestamp = int(calendar.timegm(date.timetuple()))
-        now_timestamp_milliseconds = now_timestamp * 1000;
+        now_timestamp_milliseconds = now_timestamp * 1000
 
-        # http://smb.cdnak.neulion.com/fs/nba/feeds_s2012/schedule/2013/10_7.js?t=1381054350000
-        req = urllib2.Request(schedule, None);
+        req = urllib2.Request(schedule, None)
         response = str(urllib2.urlopen(req).read())
         json_response = json.loads(response[response.find("["):])
 
@@ -148,7 +146,7 @@ class LiveTV:
         if not vars.cookies:
             return ""
 
-        failsafe = True;
+        failsafe = True
 
         url = vars.config['publish_endpoint']
         headers = {
