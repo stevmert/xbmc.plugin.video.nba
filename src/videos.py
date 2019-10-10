@@ -48,7 +48,7 @@ def videoMenu():
     })
 
 def videoListMenu():
-    date = vars.params.get("date");
+    date = vars.params.get("date")
     video_tag = vars.params.get("video_tag")
     video_query = vars.params.get("video_query")
     page = int(vars.params.get("page", 0))
@@ -80,7 +80,7 @@ def videoListMenu():
             selected_date.strftime('%Y-%m-%dT23:59:59.000Z')
         )
 
-    base_url = "http://smbsolr.cdnak.neulion.com/solr_nbav6/nba/nba/usersearch/?"
+    base_url = "https://neulionscnba-a.akamaihd.net/solr/nba_program/usersearch/?"
     params = urllib.urlencode({
         "wt": "json",
         "json.wrf": "updateVideoBoxCallback",
@@ -90,7 +90,7 @@ def videoListMenu():
         "rows": per_page
     })
 
-    url = base_url + params;
+    url = base_url + params
     log("videoListMenu: %s: url of date is %s" % (video_tag, url), xbmc.LOGDEBUG)
 
     response = urllib2.urlopen(url).read()
@@ -180,7 +180,7 @@ def videoPlay():
 
     xml = parseString(str(content))
     video_url = xml.getElementsByTagName("path")[0].childNodes[0].nodeValue
-    video_url = getGameUrlWithBitrate_Old(video_url, "video")
+    video_url = getGameUrlWithBitrate(video_url, "video")
     log("videoPlay: video url is %s" % video_url, xbmc.LOGDEBUG)
 
     #remove query string
