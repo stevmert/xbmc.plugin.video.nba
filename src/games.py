@@ -156,9 +156,7 @@ def getHighlightGameUrl(video_id):
 def addGamesLinks(date = '', video_type = "archive"):
     try:
         now_datetime_est = utils.nowEST()
-
-        #example: http://smb.cdnak.neulion.com/fs/nba/feeds_s2012/schedule/2013/10_7.js?t=1381054350000
-        schedule = 'http://smb.cdnak.neulion.com/fs/nba/feeds_s2012/schedule/%04d/%d_%d.js?t=%d' % \
+        schedule = 'https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds_s2019/schedule/%04d/%d_%d.js?t=%d' % \
             (date.year, date.month, date.day, time.time())
         utils.log('Requesting %s' % schedule, xbmc.LOGDEBUG)
 
@@ -240,7 +238,7 @@ def addGamesLinks(date = '', video_type = "archive"):
 
                         thumbnail_url = utils.generateCombinedThumbnail(v, h)
                     elif image:
-                        thumbnail_url = "https://neulionmdnyc-a.akamaihd.net/u/nba/nba/thumbs/%s" % image
+                        thumbnail_url = "https://nbadsdmt.akamaized.net/media/nba/nba/thumbs/%s" % image
 
                     if video_type == "live":
                         if future_video:
@@ -321,8 +319,8 @@ def playGame():
                 item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
                 item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')
                 item.setContentLookup(False)
-                #TODO: get license url from config
-                licUrl = 'https://prod-lic2widevine.sd-ngp.net/proxy|authorization=bearer ' + currentvideo['drm'] + '|R{SSM}|';
+                # TODO: get license url from config
+                licUrl = 'https://prod-lic2widevine.sd-ngp.net/proxy|authorization=bearer ' + currentvideo['drm'] + '|R{SSM}|'
                 item.setProperty('inputstream.adaptive.license_key', licUrl)
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
