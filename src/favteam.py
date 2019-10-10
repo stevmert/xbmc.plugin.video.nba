@@ -13,13 +13,11 @@ def addFavTeamGameLinks(fromDate, favTeamAbbrs, video_type = 'archive'):
     try:
         if type(fromDate) is datetime.datetime:
             fromDate = "%04d/%d_%d" % (fromDate.year, fromDate.month, fromDate.day)
-        schedule = 'http://smb.cdnak.neulion.com/fs/nba/feeds_s2012/schedule/' + fromDate +  '.js?t=' + "%d"  %time.time()
+        schedule = 'https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds_s2019/schedule/' + fromDate +  '.js?t=' + "%d"  %time.time()
         log('Requesting %s' % schedule, xbmc.LOGDEBUG)
 
         now_datetime_est = nowEST()
-
-        # http://smb.cdnak.neulion.com/fs/nba/feeds_s2012/schedule/2013/10_7.js?t=1381054350000
-        req = urllib2.Request(schedule, None);
+        req = urllib2.Request(schedule, None)
         response = str(urllib2.urlopen(req).read())
         js = json.loads(response[response.find("{"):])
 
