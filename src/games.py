@@ -5,7 +5,6 @@ from xml.dom.minidom import parseString
 import utils,common
 from request import Request
 import vars
-import inputstreamhelper
 
 def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
     utils.log("cookies: %s %s" % (video_type, vars.cookies), xbmc.LOGDEBUG)
@@ -293,6 +292,8 @@ def addGamesLinks(date = '', video_type = "archive"):
         pass
 
 def playGame():
+    from inputstreamhelper import Helper
+
     # Authenticate
     if vars.cookies == '':
         vars.cookies = common.login()
@@ -312,7 +313,7 @@ def playGame():
     if 'url' in currentvideo:
         item = xbmcgui.ListItem(path=currentvideo['url'])
         if '.mpd' in currentvideo['url']:
-            is_helper = inputstreamhelper.Helper('mpd', drm='com.widevine.alpha')
+            is_helper = Helper('mpd', drm='com.widevine.alpha')
             if is_helper.check_inputstream():
                 item.setProperty('inputstreamaddon', 'inputstream.adaptive')
                 item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
