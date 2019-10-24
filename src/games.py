@@ -323,7 +323,7 @@ def playGame():
                 # TODO: get license url from config
                 licUrl = 'https://prod-lic2widevine.sd-ngp.net/proxy|authorization=bearer ' + currentvideo['drm'] + '|R{SSM}|'
                 item.setProperty('inputstream.adaptive.license_key', licUrl)
-        xbmcplugin.setResolvedUrl(handle=sys.argv[1], succeeded=True, listitem=play_item)
+        xbmcplugin.setResolvedUrl(handle=sys.argv[1], succeeded=True, listitem=item)
 
 def chooseGameVideoMenu():
     video_id = vars.params.get("video_id")
