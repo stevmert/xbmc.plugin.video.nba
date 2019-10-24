@@ -315,15 +315,15 @@ def playGame():
         if '.mpd' in currentvideo['url']:
             is_helper = Helper('mpd', drm='com.widevine.alpha')
             if is_helper.check_inputstream():
-                item.setProperty('inputstreamaddon', 'inputstream.adaptive')
+                item.setProperty('inputstreamaddon', is_helper.inputstream_addon)
                 item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
                 item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
-                item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')
-                item.setContentLookup(False)
+                item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')  # TODO check this
+                item.setContentLookup(False)  # TODO check this
                 # TODO: get license url from config
                 licUrl = 'https://prod-lic2widevine.sd-ngp.net/proxy|authorization=bearer ' + currentvideo['drm'] + '|R{SSM}|'
                 item.setProperty('inputstream.adaptive.license_key', licUrl)
-        xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
+        xbmcplugin.setResolvedUrl(handle=sys.argv[1], succeeded=True, listitem=play_item)
 
 def chooseGameVideoMenu():
     video_id = vars.params.get("video_id")
