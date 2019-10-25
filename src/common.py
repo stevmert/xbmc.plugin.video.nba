@@ -19,9 +19,6 @@ def updateFavTeam():
                 vars.fav_team_abbrs = abbrs
                 xbmc.log(msg="fav_team_abbrs set to %s" % str(vars.fav_team_abbrs), level=xbmc.LOGWARNING)
 
-def getGameUrlWithBitrate(url, video_type):
-    return url
-
 def getFanartImage():
     # get the feed url
     feed_url = "https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds/common/dl.js"
