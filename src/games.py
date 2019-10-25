@@ -22,17 +22,17 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
     headers = {
         'Cookie': vars.cookies,
         'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10553',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
     }
     body = {
-        'extid': str(video_id),
-        'format': "xml",
-        'gt': gt,
-        'gs': vars.params.get("game_state", "3"),
         'type': 'game',
-        'plid': vars.player_id,
-        'drmtoken': 'true',
-        'deviceid': xbmc.getInfoLabel('Network.MacAddress')
+        'extid': str(video_id),
+        'drmtoken': True,
+        'deviceid': xbmc.getInfoLabel('Network.MacAddress'),
+        'gt': gt,
+        'gs': vars.params.get('game_state', 3),
+        'pcid': vars.player_id,
+        'format': 'xml',
     }
 
     if video_type == "live":
@@ -65,19 +65,17 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
 
     if vars.params.get("camera_number"):
         body['cam'] = vars.params.get("camera_number")
-    if video_type != "live":
-        body['format'] = 'xml'
-    body = urllib.urlencode(body)
 
+    body = urllib.urlencode(body)
     utils.log("the body of publishpoint request is: %s" % body, xbmc.LOGDEBUG)
 
     try:
         request = urllib2.Request(url, body, headers)
         response = urllib2.urlopen(request)
         content = response.read()
-    except urllib2.HTTPError as e:
-        utils.logHttpException(e, url)
-        utils.littleErrorPopup( xbmcaddon.Addon().getLocalizedString(50020) )
+    except urllib2.HTTPError as err:
+        utils.logHttpException(err, url)
+        utils.littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50020))
         return ''
 
     xml = parseString(str(content))
@@ -301,7 +299,7 @@ def playGame():
         return
 
     currentvideo_id = vars.params.get("video_id")
-    currentvideo_type  = vars.params.get("video_type")
+    currentvideo_type = vars.params.get("video_type")
     start_time = vars.params.get("start_time")
     duration = vars.params.get("duration")
     currentvideo_ishomefeed = vars.params.get("video_ishomefeed", "1")
@@ -323,7 +321,7 @@ def playGame():
                 # TODO: get license url from config
                 licUrl = 'https://prod-lic2widevine.sd-ngp.net/proxy|authorization=bearer ' + currentvideo['drm'] + '|R{SSM}|'
                 item.setProperty('inputstream.adaptive.license_key', licUrl)
-        xbmcplugin.setResolvedUrl(handle=sys.argv[1], succeeded=True, listitem=item)
+        xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
 def chooseGameVideoMenu():
     video_id = vars.params.get("video_id")

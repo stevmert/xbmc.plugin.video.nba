@@ -152,30 +152,32 @@ class LiveTV:
         headers = {
             'Cookie': vars.cookies,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'iPad' if failsafe
-                else "Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/12.0",
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
         }
         body = {
-            'id': "1",
             'type': 'channel',
-            'ppid': vars.player_id,
+            'id': 1,
+            'drmtoken': True,
+            'deviceid': xbmc.getInfoLabel('Network.MacAddress'),
+            'pcid': vars.player_id,
+            'format': 'xml',
         }
         if not failsafe:
             body['isFlex'] = 'true'
         else:
             body['nt'] = '1'
-        body = urllib.urlencode(body)
 
+        body = urllib.urlencode(body)
         log("nba tv live: the body of publishpoint request is: %s" % body, xbmc.LOGDEBUG)
 
         try:
             request = urllib2.Request(url, body, headers)
             response = urllib2.urlopen(request)
             content = response.read()
-        except urllib2.HTTPError as e:
-            log("nba live tv: failed getting url: %s %s" % (url, e.read()), xbmc.LOGDEBUG)
-            littleErrorPopup( xbmcaddon.Addon().getLocalizedString(50020) )
-            return ""
+        except urllib2.HTTPError as err:
+            log("nba live tv: failed getting url: %s %s" % (url, err.read()), xbmc.LOGDEBUG)
+            littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50020))
+            return ''
 
         # Get the adaptive video url
         xml = parseString(str(content))
