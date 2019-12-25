@@ -5,7 +5,6 @@ from xml.dom.minidom import parseString
 import utils,common
 from request import Request
 import vars
-import inputstreamhelper
 
 def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
     utils.log("cookies: %s %s" % (video_type, vars.cookies), xbmc.LOGDEBUG)
@@ -23,17 +22,17 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
     headers = {
         'Cookie': vars.cookies,
         'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10553',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
     }
     body = {
-        'extid': str(video_id),
-        'format': "xml",
-        'gt': gt,
-        'gs': vars.params.get("game_state", "3"),
         'type': 'game',
-        'plid': vars.player_id,
-        'drmtoken': 'true',
-        'deviceid': xbmc.getInfoLabel('Network.MacAddress')
+        'extid': str(video_id),
+        'drmtoken': True,
+        'deviceid': xbmc.getInfoLabel('Network.MacAddress'),
+        'gt': gt,
+        'gs': vars.params.get('game_state', 3),
+        'pcid': vars.player_id,
+        'format': 'xml',
     }
 
     if video_type == "live":
@@ -66,19 +65,17 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
 
     if vars.params.get("camera_number"):
         body['cam'] = vars.params.get("camera_number")
-    if video_type != "live":
-        body['format'] = 'xml'
-    body = urllib.urlencode(body)
 
+    body = urllib.urlencode(body)
     utils.log("the body of publishpoint request is: %s" % body, xbmc.LOGDEBUG)
 
     try:
         request = urllib2.Request(url, body, headers)
         response = urllib2.urlopen(request)
         content = response.read()
-    except urllib2.HTTPError as e:
-        utils.logHttpException(e, url)
-        utils.littleErrorPopup( xbmcaddon.Addon().getLocalizedString(50020) )
+    except urllib2.HTTPError as err:
+        utils.logHttpException(err, url)
+        utils.littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50020))
         return ''
 
     xml = parseString(str(content))
@@ -90,7 +87,7 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
     selected_video_url = ''
     if video_type == "live":
         if '.mpd' in url:
-            selected_video_url = common.getGameUrlWithBitrate(url, video_type)
+            selected_video_url = url
         else:
             # transform the url
             match = re.search('(https?)://([^:]+)/([^?]+?)\?(.+)$', url)
@@ -105,13 +102,12 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
             utils.log("live cookie: %s %s" % (querystring, livecookies), xbmc.LOGDEBUG)
 
             url = "%s://%s/%s?%s" % (protocol, domain, arguments, querystring)
-            url = common.getGameUrlWithBitrate(url, video_type)
 
             selected_video_url = "%s&Cookie=%s" % (url, livecookiesencoded)
     else:
         # Archive and condensed flow: We now work with HLS.
         # The cookies are already in the URL and the server will supply them to ffmpeg later.
-        selected_video_url = common.getGameUrlWithBitrate(url, video_type)
+        selected_video_url = url
 
     if selected_video_url:
         utils.log("the url of video %s is %s" % (video_id, selected_video_url), xbmc.LOGDEBUG)
@@ -293,6 +289,8 @@ def addGamesLinks(date = '', video_type = "archive"):
         pass
 
 def playGame():
+    from inputstreamhelper import Helper
+
     # Authenticate
     if vars.cookies == '':
         vars.cookies = common.login()
@@ -300,7 +298,7 @@ def playGame():
         return
 
     currentvideo_id = vars.params.get("video_id")
-    currentvideo_type  = vars.params.get("video_type")
+    currentvideo_type = vars.params.get("video_type")
     start_time = vars.params.get("start_time")
     duration = vars.params.get("duration")
     currentvideo_ishomefeed = vars.params.get("video_ishomefeed", "1")
@@ -312,13 +310,13 @@ def playGame():
     if 'url' in currentvideo:
         item = xbmcgui.ListItem(path=currentvideo['url'])
         if '.mpd' in currentvideo['url']:
-            is_helper = inputstreamhelper.Helper('mpd', drm='com.widevine.alpha')
+            is_helper = Helper('mpd', drm='com.widevine.alpha')
             if is_helper.check_inputstream():
-                item.setProperty('inputstreamaddon', 'inputstream.adaptive')
+                item.setProperty('inputstreamaddon', is_helper.inputstream_addon)
                 item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
                 item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
-                item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')
-                item.setContentLookup(False)
+                item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')  # TODO check this
+                item.setContentLookup(False)  # TODO check this
                 # TODO: get license url from config
                 licUrl = 'https://prod-lic2widevine.sd-ngp.net/proxy|authorization=bearer ' + currentvideo['drm'] + '|R{SSM}|'
                 item.setProperty('inputstream.adaptive.license_key', licUrl)
@@ -378,11 +376,14 @@ def chooseGameVideoMenu():
         common.addListItem("Full game", url="", mode="playgame", iconimage="", customparams=params)
 
     if vars.show_cameras:
-    
-        #Add all the cameras available
+        utils.log(nba_cameras, xbmc.LOGDEBUG)
+        utils.log(game_cameras, xbmc.LOGDEBUG)
+
+        # Add all the cameras available
         for camera_number in game_cameras:
-            #Skip camera number 0 (broadcast?) - the full game links are the same
             camera_number = int(camera_number)
+
+            # Skip camera number 0 (broadcast?) - the full game links are the same
             if camera_number == 0:
                 continue
 
@@ -395,11 +396,10 @@ def chooseGameVideoMenu():
                 'duration': duration,
             }
 
-            name = "Camera %d: %s" % (camera_number, nba_cameras[camera_number])
-            common.addListItem(name
-                , url="", mode="playgame", iconimage="", customparams=params)
+            name = "Camera %d: %s" % (camera_number, nba_cameras.get(camera_number, 'Unknown'))
+            common.addListItem(name, url="", mode="playgame", iconimage="", customparams=params)
 
-    #Live games have no condensed or highlight link
+    # Live games have no condensed or highlight link
     if video_type != "live":
         # Create the "Condensed" list item
         if has_condensed_game:
@@ -415,7 +415,7 @@ def chooseGameVideoMenu():
         if highlights_url:
             common.addVideoListItem("Highlights", highlights_url, iconimage="")
 
-    xbmcplugin.endOfDirectory(handle = int(sys.argv[1]) )
+    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]))
 
 def chooseGameMenu(mode, video_type, date2Use = None):
     try:

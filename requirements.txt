@@ -1,0 +1,6 @@
+pip
+pylint<2.0.0
+autopep8
+setuptools
+Kodistubs
+git+git://github.com/emilsvennesson/script.module.inputstreamhelper.git@v0.4.3#egg=inputstreamhelper
