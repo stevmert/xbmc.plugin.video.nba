@@ -61,30 +61,30 @@ class LiveTV:
         video_url = LiveTV.getLiveUrl()
         if video_url:
             shared_data = SharedData()
-            shared_data.set("playing", {
-                "what": "nba_tv_live",
+            shared_data.set('playing', {
+                'what': 'nba_tv_live',
             })
 
             item = xbmcgui.ListItem(path=video_url)
-            xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+            xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
     @staticmethod
     def playEpisode():
-        start_timestamp = vars.params.get("start_timestamp")
-        duration = vars.params.get("duration")
+        start_timestamp = vars.params.get('start_timestamp')
+        duration = vars.params.get('duration')
         video_url = LiveTV.getEpisodeUrl(start_timestamp, duration)
         if video_url:
-            # shared_data = SharedData()
-            # shared_data.set("playing", {
-            #     "what": "nba_tv_episode",
-            #     "data": {
-            #         "start_timestamp": start_timestamp,
-            #         "duration": duration,
-            #     }
-            # })
+            shared_data = SharedData()
+            shared_data.set('playing', {
+                'what': 'nba_tv_episode',
+                'data': {
+                    'start_timestamp': start_timestamp,
+                    'duration': duration,
+                },
+            })
 
             item = xbmcgui.ListItem(path=video_url)
-            xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+            xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
     @staticmethod
     def getEpisodeUrl(start_timestamp, duration, force_login=False):
