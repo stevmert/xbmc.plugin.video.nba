@@ -376,11 +376,14 @@ def chooseGameVideoMenu():
         common.addListItem("Full game", url="", mode="playgame", iconimage="", customparams=params)
 
     if vars.show_cameras:
-    
-        #Add all the cameras available
+        utils.log(nba_cameras, xbmc.LOGDEBUG)
+        utils.log(game_cameras, xbmc.LOGDEBUG)
+
+        # Add all the cameras available
         for camera_number in game_cameras:
-            #Skip camera number 0 (broadcast?) - the full game links are the same
             camera_number = int(camera_number)
+
+            # Skip camera number 0 (broadcast?) - the full game links are the same
             if camera_number == 0:
                 continue
 
@@ -393,11 +396,10 @@ def chooseGameVideoMenu():
                 'duration': duration,
             }
 
-            name = "Camera %d: %s" % (camera_number, nba_cameras[camera_number])
-            common.addListItem(name
-                , url="", mode="playgame", iconimage="", customparams=params)
+            name = "Camera %d: %s" % (camera_number, nba_cameras.get(camera_number, 'Unknown'))
+            common.addListItem(name, url="", mode="playgame", iconimage="", customparams=params)
 
-    #Live games have no condensed or highlight link
+    # Live games have no condensed or highlight link
     if video_type != "live":
         # Create the "Condensed" list item
         if has_condensed_game:
@@ -413,7 +415,7 @@ def chooseGameVideoMenu():
         if highlights_url:
             common.addVideoListItem("Highlights", highlights_url, iconimage="")
 
-    xbmcplugin.endOfDirectory(handle = int(sys.argv[1]) )
+    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]))
 
 def chooseGameMenu(mode, video_type, date2Use = None):
     try:
