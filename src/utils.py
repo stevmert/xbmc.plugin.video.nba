@@ -58,18 +58,6 @@ def toLocalTimezone(date):
     #Localize the date to include the offset, then convert to local timezone
     return est_timezone.localize(date).astimezone(local_timezone)
 
-def isLiveUsable():
-    # retrieve current installed version
-    json_query = xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Application.GetProperties", "params": {"properties": ["version", "name"]}, "id": 1 }')
-    json_query = unicode(json_query, 'utf-8', errors='ignore')
-    json_query = json.loads(json_query)
-    version_installed = []
-    if json_query.has_key('result') and json_query['result'].has_key('version'):
-        version_installed  = json_query['result']['version']
-        log("Version installed %s" %version_installed, xbmc.LOGDEBUG)
-
-    return version_installed and version_installed['major'] >= 13
-
 def log(txt, severity=xbmc.LOGINFO):
     if severity == xbmc.LOGDEBUG and not vars.debug:
         pass

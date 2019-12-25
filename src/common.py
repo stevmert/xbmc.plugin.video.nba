@@ -84,24 +84,4 @@ def login():
         # logged in
         vars.cookies = response.info().getheader('Set-Cookie').partition(';')[0]
 
-    """try:
-        body = urllib.urlencode({
-            'format': 'json'
-        })
-
-        request = urllib2.Request('https://watch.nba.com/account/subscriptions?', body, headers)
-        subscriptions = urllib2.urlopen(request).read()
-    except urllib2.HTTPError as e:
-        log("Login failed with code: %d and content: %s" % (e.getcode(), e.read()))
-        littleErrorPopup( xbmcaddon.Addon().getLocalizedString(50022) )
-        return ''
-
-    subscription_json = json.loads(subscriptions)
-    log("Subscription json: %s" % (subscription_json), xbmc.LOGNOTICE)
-    if subscription_json['code'] != "noaccess":
-        subscription_sku = subscription_json["subs"][0]["sku"]
-        log("Subscription sku: %s" % (subscription_sku), xbmc.LOGNOTICE)
-        if subscription_sku == "LPP2015":
-            vars.subscriptions = ["season", "playoffs", "nbatvlive"]"""
-
     return vars.cookies

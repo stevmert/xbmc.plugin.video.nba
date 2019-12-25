@@ -1,3 +1,7 @@
+
+
+from nbatvlive import LiveTV
+
 import xbmc,xbmcaddon
 import time, urllib, os, sys
 from urlparse import urlparse, parse_qs
@@ -10,11 +14,9 @@ addon_dir = xbmc.translatePath( my_addon.getAddonInfo('path') ).decode('utf-8')
 sys.path.append(os.path.join(addon_dir, 'src', 'service'))
 
 import utils
-from nbatvlive import LiveTV
 from shareddata import SharedData
 from base_thread import BaseThread
 from player import MyPlayer
-
 
 class PollingThread(BaseThread):
 
@@ -28,7 +30,6 @@ class PollingThread(BaseThread):
 
     def refreshLiveUrl(self):
         if self.shared_data.get("playing.what") == "nba_tv_live":
-            #True=force login (refresh cookie)
             video_url = LiveTV.getLiveUrl(True)
         elif self.shared_data.get("playing.what") == "nba_tv_episode":
             start_timestamp = self.shared_data.get("playing.data.start_timestamp")

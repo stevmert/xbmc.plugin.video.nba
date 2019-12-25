@@ -73,7 +73,6 @@ class LiveTV:
     def playEpisode():
         start_timestamp = vars.params.get("start_timestamp")
         duration = vars.params.get("duration")
-
         video_url = LiveTV.getEpisodeUrl(start_timestamp, duration)
         if video_url:
             # shared_data = SharedData()
