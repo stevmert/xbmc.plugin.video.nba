@@ -54,8 +54,7 @@ class LiveTV:
             }
 
             name = "%s - %s (%s)" % (entry['start'], entry['title'], entry['duration'])
-            addListItem(name, url="", mode="nbatvliveepisode",
-                iconimage=entry['image'], customparams=params)
+            addListItem(name, '', 'nbatvliveepisode', iconimage=entry['image'], customparams=params)
 
     @staticmethod
     def playLive():
@@ -88,11 +87,11 @@ class LiveTV:
             xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
 
     @staticmethod
-    def getEpisodeUrl(start_timestamp, duration):
-        if not vars.cookies:
+    def getEpisodeUrl(start_timestamp, duration, force_login=False):
+        if not vars.cookies or force_login:
             login()
         if not vars.cookies:
-            return ""
+            return ''
 
         url = vars.config['publish_endpoint']
         headers = {
@@ -143,7 +142,7 @@ class LiveTV:
         if not vars.cookies or force_login:
             login()
         if not vars.cookies:
-            return ""
+            return ''
 
         failsafe = True
 
