@@ -8,13 +8,13 @@ from common import *
 from utils import *
 from shareddata import SharedData
 import vars
- 
+
 class LiveTV:
     @staticmethod
     def menu():
-        addListItem('Watch live', '', 'nbatvlive','')
-        addListItem('Watch today\'s programming', '', mode='nbatvliveepisodemenu', iconimage='', isfolder=True)
-        addListItem('Select date', '', mode='nbatvliveepisodemenu', iconimage='', isfolder=True, customparams={
+        addListItem('Watch live', '', 'nbatvlive', '')
+        addListItem('Watch today\'s programming', '', 'nbatvliveepisodemenu', '', isfolder=True)
+        addListItem('Select date', '', 'nbatvliveepisodemenu', '', isfolder=True, customparams={
             'custom_date': True
         })
 
