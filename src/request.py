@@ -2,6 +2,7 @@ import urllib2,json
 import utils
 
 class Request:
+
     @staticmethod
     def getJson(url, headers={}):
         utils.log("Requesting %s..." % url)

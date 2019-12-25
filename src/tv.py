@@ -9,11 +9,12 @@ from utils import *
 from shareddata import SharedData
 import vars
 
-class LiveTV:
+class TV:
+
     @staticmethod
     def menu():
-        addListItem('Watch live', '', 'nbatvlive', '')
-        addListItem('Watch today\'s programming', '', 'nbatvliveepisodemenu', '', isfolder=True)
+        addListItem('Live', '', 'nbatvlive', '')
+        addListItem('Today\'s programming', '', 'nbatvliveepisodemenu', '', isfolder=True)
         addListItem('Select date', '', 'nbatvliveepisodemenu', '', isfolder=True, customparams={
             'custom_date': True
         })
@@ -58,7 +59,7 @@ class LiveTV:
 
     @staticmethod
     def playLive():
-        video_url = LiveTV.getLiveUrl()
+        video_url = TV.getLiveUrl()
         if video_url:
             shared_data = SharedData()
             shared_data.set('playing', {
@@ -72,7 +73,7 @@ class LiveTV:
     def playEpisode():
         start_timestamp = vars.params.get('start_timestamp')
         duration = vars.params.get('duration')
-        video_url = LiveTV.getEpisodeUrl(start_timestamp, duration)
+        video_url = TV.getEpisodeUrl(start_timestamp, duration)
         if video_url:
             shared_data = SharedData()
             shared_data.set('playing', {

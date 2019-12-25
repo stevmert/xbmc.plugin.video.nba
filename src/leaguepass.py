@@ -13,7 +13,7 @@ from videos import *
 from favteam import *
 import vars
 
-from nbatvlive import LiveTV
+from tv import TV
 
 def mainMenu():
     addListItem('Live games', 'live', 'live', '', isfolder=True)
@@ -93,13 +93,13 @@ elif mode.startswith("video"):
     else:
         videoMenu()
 elif mode == 'nbatvlivemenu':
-    LiveTV.menu()
+    TV.menu()
 elif mode == 'nbatvlive':
-    LiveTV.playLive()
+    TV.playLive()
 elif mode == 'nbatvliveepisodemenu':
-    LiveTV.episodeMenu()
+    TV.episodeMenu()
 elif mode == 'nbatvliveepisode':
-    LiveTV.playEpisode()
+    TV.playEpisode()
 elif mode == "favteam":
     if url == "older":
         favTeamOlderMenu()

@@ -5,6 +5,7 @@
 
 
 class StorageServer:
+
     def __init__(self, table, timeout=24):
         return None
 
