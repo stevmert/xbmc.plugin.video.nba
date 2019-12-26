@@ -17,7 +17,7 @@ from tv import TV
 
 def mainMenu():
     addListItem('Live games', 'live', 'live', '', isfolder=True)
-    addListItem('Games Archive', 'archive', 'archive', '', isfolder=True)
+    addListItem('Games archive', 'archive', 'archive', '', isfolder=True)
     addListItem('NBA TV', '', 'nbatvlivemenu', '', isfolder=True)
     addListItem('Videos', '', 'video', '', isfolder=True)
     addListItem('Favorite team\'s games', '', 'favteam', '', isfolder=True)

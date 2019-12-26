@@ -78,8 +78,9 @@ class TV:
                 'what': 'nba_tv_live',
             })
 
-            item = xbmcgui.ListItem(path=video_url)
-            xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
+            item = common.getPlayableItem(video_url)
+            if item is not None:
+                xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
     @staticmethod
     def playEpisode():
@@ -96,8 +97,9 @@ class TV:
                 },
             })
 
-            item = xbmcgui.ListItem(path=video_url)
-            xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
+            item = common.getPlayableItem(video_url)
+            if item is not None:
+                xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
     @staticmethod
     def getEpisodeUrl(start_timestamp, duration, force_login=False):

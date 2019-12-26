@@ -289,8 +289,6 @@ def addGamesLinks(date = '', video_type = "archive"):
         pass
 
 def playGame():
-    from inputstreamhelper import Helper
-
     # Authenticate
     if vars.cookies == '':
         vars.cookies = common.login()
@@ -307,19 +305,8 @@ def playGame():
     # Get the video url.
     # Authentication is needed over this point!
     currentvideo = getGameUrl(currentvideo_id, currentvideo_type, currentvideo_ishomefeed, start_time, duration)
-    if 'url' in currentvideo:
-        item = xbmcgui.ListItem(path=currentvideo['url'])
-        if '.mpd' in currentvideo['url']:
-            is_helper = Helper('mpd', drm='com.widevine.alpha')
-            if is_helper.check_inputstream():
-                item.setProperty('inputstreamaddon', is_helper.inputstream_addon)
-                item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
-                item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
-                item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')  # TODO check this
-                item.setContentLookup(False)  # TODO check this
-                # TODO: get license url from config
-                licUrl = 'https://prod-lic2widevine.sd-ngp.net/proxy|authorization=bearer ' + currentvideo['drm'] + '|R{SSM}|'
-                item.setProperty('inputstream.adaptive.license_key', licUrl)
+    item = common.getPlayableItem(currentvideo)
+    if item is not None:
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
 def chooseGameVideoMenu():

@@ -8,6 +8,26 @@ from xml.dom.minidom import parseString
 import vars
 from utils import *
 
+
+def getPlayableItem(video):
+    item = None
+    if 'url' in video:
+        item = xbmcgui.ListItem(path=video['url'])
+        if '.mpd' in video['url']:
+            from inputstreamhelper import Helper
+            is_helper = Helper('mpd', drm='com.widevine.alpha')
+            if is_helper.check_inputstream():
+                item.setProperty('inputstreamaddon', is_helper.inputstream_addon)
+                item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
+                item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
+                item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')  # TODO check this
+                item.setContentLookup(False)  # TODO check this
+                # TODO: get license url from config
+                licUrl = 'https://prod-lic2widevine.sd-ngp.net/proxy|authorization=bearer ' + video['drm'] + '|R{SSM}|'
+                item.setProperty('inputstream.adaptive.license_key', licUrl)
+
+    return item
+
 def updateFavTeam():
     vars.fav_team_abbrs = None
 
