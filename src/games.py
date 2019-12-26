@@ -112,7 +112,7 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
     if selected_video_url:
         utils.log("the url of video %s is %s" % (video_id, selected_video_url), xbmc.LOGDEBUG)
 
-    return {'url':selected_video_url, 'drm':drm}
+    return {'url': selected_video_url, 'drm': drm}
 
 def getHighlightGameUrl(video_id):
     url = 'https://watch.nba.com/service/publishpoint'
