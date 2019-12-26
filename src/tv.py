@@ -9,6 +9,7 @@ from utils import *
 from shareddata import SharedData
 import vars
 
+
 class TV:
 
     @staticmethod

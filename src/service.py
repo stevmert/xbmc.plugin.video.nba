@@ -18,6 +18,7 @@ from shareddata import SharedData
 from base_thread import BaseThread
 from player import MyPlayer
 
+
 class PollingThread(BaseThread):
 
     def __init__(self):

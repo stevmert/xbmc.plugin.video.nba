@@ -1,6 +1,7 @@
 import xbmc,xbmcvfs,xbmcaddon
 import json
 
+
 class SharedData:
 
 	def __init__(self):
