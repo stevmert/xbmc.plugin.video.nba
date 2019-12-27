@@ -1,3 +1,5 @@
+
+
 from datetime import date
 from datetime import timedelta
 import urllib
@@ -8,18 +10,17 @@ from utils import *
 from games import *
 from common import *
 from videos import *
-from nbatvlive import LiveTV
 from favteam import *
 import vars
 
+from tv import TV
+
 def mainMenu():
-    if isLiveUsable():
-        addListItem('Live games', 'live', 'live','', True)
-    addListItem('Archive', 'archive', 'archive','', True)
-    if isLiveUsable():
-        addListItem('NBA TV Live', '', 'nbatvlivemenu','', True)
-    addListItem('Video', '', 'video', '', True)
-    addListItem('Favorite team\'s games', '', 'favteam', '', True)
+    addListItem('Live games', 'live', 'live', '', isfolder=True)
+    addListItem('Games archive', 'archive', 'archive', '', isfolder=True)
+    addListItem('NBA TV', '', 'nbatvlivemenu', '', isfolder=True)
+    addListItem('Videos', '', 'video', '', isfolder=True)
+    addListItem('Favorite team\'s games', '', 'favteam', '', isfolder=True)
 
 def archiveMenu():
     addListItem('This week', "archive", 'thisweek' ,'', True)
@@ -91,14 +92,14 @@ elif mode.startswith("video"):
         videoDateMenu()
     else:
         videoMenu()
-elif mode == "nbatvlivemenu":
-    LiveTV.menu()
-elif mode == "nbatvlive":
-    LiveTV.playLive()
-elif mode == "nbatvliveepisodemenu":
-    LiveTV.episodeMenu()
-elif mode == "nbatvliveepisode":
-    LiveTV.playEpisode()
+elif mode == 'nbatvlivemenu':
+    TV.menu()
+elif mode == 'nbatvlive':
+    TV.playLive()
+elif mode == 'nbatvliveepisodemenu':
+    TV.episodeMenu()
+elif mode == 'nbatvliveepisode':
+    TV.playEpisode()
 elif mode == "favteam":
     if url == "older":
         favTeamOlderMenu()

@@ -1,3 +1,7 @@
+
+
+from tv import TV
+
 import xbmc,xbmcaddon
 import time, urllib, os, sys
 from urlparse import urlparse, parse_qs
@@ -10,7 +14,6 @@ addon_dir = xbmc.translatePath( my_addon.getAddonInfo('path') ).decode('utf-8')
 sys.path.append(os.path.join(addon_dir, 'src', 'service'))
 
 import utils
-from nbatvlive import LiveTV
 from shareddata import SharedData
 from base_thread import BaseThread
 from player import MyPlayer
@@ -27,13 +30,12 @@ class PollingThread(BaseThread):
         self.shared_data = SharedData()
 
     def refreshLiveUrl(self):
-        if self.shared_data.get("playing.what") == "nba_tv_live":
-            #True=force login (refresh cookie)
-            video_url = LiveTV.getLiveUrl(True)
-        elif self.shared_data.get("playing.what") == "nba_tv_episode":
-            start_timestamp = self.shared_data.get("playing.data.start_timestamp")
-            duration = self.shared_data.get("playing.data.duration")
-            video_url = LiveTV.getEpisodeUrl(start_timestamp, duration)
+        if self.shared_data.get('playing.what') == 'nba_tv_live':
+            video_url = TV.getLiveUrl(force_login=True)
+        elif self.shared_data.get('playing.what') == 'nba_tv_episode':
+            start_timestamp = self.shared_data.get('playing.data.start_timestamp')
+            duration = self.shared_data.get('playing.data.duration')
+            video_url = TV.getEpisodeUrl(start_timestamp, duration, force_login=True)
 
         if video_url:
             self.readExpiresFromUrl(video_url)

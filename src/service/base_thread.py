@@ -1,5 +1,6 @@
 import threading
 
+
 class BaseThread(threading.Thread):
     """ Convenience class for creating stoppable threads. """
 

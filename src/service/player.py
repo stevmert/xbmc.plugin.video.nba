@@ -3,6 +3,7 @@ import utils
 
 from shareddata import SharedData
 
+
 class MyPlayer(xbmc.Player):
 
     def onPlayBackEnded(self):
