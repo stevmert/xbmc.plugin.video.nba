@@ -11,9 +11,8 @@ import urllib2
 from xml.dom.minidom import parseString
 
 import xbmc
-import xbmcplugin
-import xbmcgui
 import xbmcaddon
+import xbmcplugin
 
 import common
 from shareddata import SharedData

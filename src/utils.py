@@ -1,11 +1,35 @@
-import xbmc,xbmcplugin,xbmcgui,xbmcaddon,xbmcvfs
-import urllib,urllib2,urlparse,datetime,json,sys,pytz
+
+
+import datetime
+import json
 import os
 import traceback
-from dateutil.tz import tzlocal
-from PIL import Image,ImageOps
+import urllib
+import urllib2
+import urlparse
+import sys
 
+import xbmc
+import xbmcaddon
+import xbmcgui
+import xbmcplugin
+import xbmcvfs
+
+from dateutil.tz import tzlocal
+from PIL import Image, ImageOps
+import pytz
 import vars
+
+
+def fetch_json(url, headers={}):
+    log('Fetching %s' % url, xbmc.LOGINFO)
+    request = urllib2.Request(url, None, headers)
+    response = str(urllib2.urlopen(request).read())
+
+    ret = json.loads(response)
+    log(ret, xbmc.LOGDEBUG)
+    return ret
+
 
 def littleErrorPopup(error, seconds=5000):
     xbmc.executebuiltin('Notification(NBA League Pass,%s,%d,)' % (error, seconds))
