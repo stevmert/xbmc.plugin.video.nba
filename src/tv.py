@@ -111,45 +111,38 @@ class TV:
         headers = {
             'Cookie': vars.cookies,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'iPad'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
         }
-        body = urllib.urlencode({
-            'id': "1",
+        body = {
             'type': 'channel',
-            'ppid': vars.player_id,
-            'nt': "1",
+            'id': 1,
+            'drmtoken': True,
+            'deviceid': xbmc.getInfoLabel('Network.MacAddress'),
             'st': start_timestamp,
             'dur': duration,
-        })
+            'pcid': vars.player_id,
+            'format': 'xml',
+        }
 
-        utils.log("nba tv live: the body of publishpoint request is: %s" % body, xbmc.LOGDEBUG)
+        body = urllib.urlencode(body)
+        utils.log("the body of publishpoint request is: %s" % body, xbmc.LOGDEBUG)
 
         try:
             request = urllib2.Request(url, body, headers)
             response = urllib2.urlopen(request)
             content = response.read()
         except urllib2.HTTPError as err:
-            utils.log("nba live tv: failed getting url: %s %s" % (url, err.read()), xbmc.LOGDEBUG)
+            utils.logHttpException(err, url)
             utils.littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50020))
             return ''
 
-        # Get the adaptive video url
         xml = parseString(str(content))
-        video_temp_url = xml.getElementsByTagName("path")[0].childNodes[0].nodeValue
-        utils.log("nba live tv: temp video url is %s" % video_temp_url, xbmc.LOGDEBUG)
+        url = xml.getElementsByTagName("path")[0].childNodes[0].nodeValue
+        utils.log("response URL from publishpoint: %s" % url, xbmc.LOGDEBUG)
+        drm = xml.getElementsByTagName("drmToken")[0].childNodes[0].nodeValue
+        utils.log(drm, xbmc.LOGDEBUG)
 
-        # transform the link
-        match = re.search('http://([^:]+)/([^?]+?)\?(.+)$', video_temp_url)
-        domain = match.group(1)
-        arguments = match.group(2)
-        querystring = match.group(3)
-
-        livecookies = "nlqptid=%s" % (querystring)
-        livecookiesencoded = urllib.quote(livecookies)
-        utils.log("live cookie: %s %s" % (querystring, livecookies), xbmc.LOGDEBUG)
-
-        video_url = "http://%s/%s?%s|User-Agent=%s&Cookie=%s" % (domain, arguments, querystring, vars.useragent, livecookiesencoded)
-        return video_url
+        return {'url': url, 'drm': drm}
 
     @staticmethod
     def getLiveUrl(force_login=False):
