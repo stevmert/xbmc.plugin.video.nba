@@ -95,11 +95,11 @@ elif mode.startswith("video"):
 elif mode == 'nbatvlivemenu':
     TV.menu()
 elif mode == 'nbatvlive':
-    TV.playLive()
+    TV.play_live()
 elif mode == 'nbatvliveepisodemenu':
-    TV.episodeMenu()
+    TV.episode_menu()
 elif mode == 'nbatvliveepisode':
-    TV.playEpisode()
+    TV.play_episode()
 elif mode == "favteam":
     if url == "older":
         favTeamOlderMenu()

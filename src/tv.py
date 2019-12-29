@@ -31,7 +31,7 @@ class TV:
         })
 
     @staticmethod
-    def episodeMenu():
+    def episode_menu():
         if vars.params.get("custom_date", False):
             date = datetime.datetime.combine(common.getDate(), datetime.time(hour=4, minute=0, second=0))
         else:
@@ -69,8 +69,8 @@ class TV:
             common.addListItem(name, '', 'nbatvliveepisode', iconimage=entry['image'], customparams=params)
 
     @staticmethod
-    def playLive():
-        video_url = TV.getLiveUrl()
+    def play_live():
+        video_url = TV.get_live_url()
         if video_url:
             shared_data = SharedData()
             shared_data.set('playing', {
@@ -82,10 +82,10 @@ class TV:
                 xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
     @staticmethod
-    def playEpisode():
+    def play_episode():
         start_timestamp = vars.params.get('start_timestamp')
         duration = vars.params.get('duration')
-        video_url = TV.getEpisodeUrl(start_timestamp, duration)
+        video_url = TV.get_episode_url(start_timestamp, duration)
         if video_url:
             shared_data = SharedData()
             shared_data.set('playing', {
@@ -101,7 +101,7 @@ class TV:
                 xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
     @staticmethod
-    def getEpisodeUrl(start_timestamp, duration, force_login=False):
+    def get_episode_url(start_timestamp, duration, force_login=False):
         if not vars.cookies or force_login:
             common.login()
         if not vars.cookies:
@@ -145,7 +145,7 @@ class TV:
         return {'url': url, 'drm': drm}
 
     @staticmethod
-    def getLiveUrl(force_login=False):
+    def get_live_url(force_login=False):
         if not vars.cookies or force_login:
             common.login()
         if not vars.cookies:
