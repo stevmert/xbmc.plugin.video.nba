@@ -1,4 +1,7 @@
-import json, datetime, time, calendar, re, sys, traceback, urllib,urllib2
+
+
+import json
+import datetime, time, calendar, re, sys, traceback, urllib,urllib2
 from datetime import timedelta
 import xbmc,xbmcplugin,xbmcgui,xbmcaddon
 from xml.dom.minidom import parseString
@@ -317,7 +320,7 @@ def chooseGameVideoMenu():
     has_condensed_game = vars.params.get("has_condensed_game", "0") == "1"
     start_time = vars.params.get("start_time")
     duration = vars.params.get("duration")
-    game_data_json = utils.fetch_json(vars.config['game_data_endpoint'] % seo_name)
+    game_data_json = json.loads(utils.fetch(vars.config['game_data_endpoint'] % seo_name))
     game_state = game_data_json['gameState']
     game_home_team = vars.params.get("home_team")
     game_visitor_team = vars.params.get("visitor_team")
@@ -325,7 +328,7 @@ def chooseGameVideoMenu():
     if 'multiCameras' in game_data_json:
         game_cameras = game_data_json['multiCameras'].split(",")
 
-    nba_config = utils.fetch_json(vars.config['config_endpoint'])
+    nba_config = json.loads(utils.fetch(vars.config['config_endpoint']))
     nba_cameras = {}
     for camera in nba_config['content']['cameras']:
         nba_cameras[ camera['number'] ] = camera['name']

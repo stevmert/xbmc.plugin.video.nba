@@ -1,7 +1,6 @@
 
 
 import datetime
-import json
 import os
 import traceback
 import urllib
@@ -21,15 +20,12 @@ import pytz
 import vars
 
 
-def fetch_json(url, headers={}):
+def fetch(url):
     log('Fetching %s' % url, xbmc.LOGINFO)
-    request = urllib2.Request(url, None, headers)
+    request = urllib2.Request(url)
     response = str(urllib2.urlopen(request).read())
-
-    ret = json.loads(response)
-    log(ret, xbmc.LOGDEBUG)
-    return ret
-
+    log(response, xbmc.LOGDEBUG)
+    return response
 
 def littleErrorPopup(error, seconds=5000):
     xbmc.executebuiltin('Notification(NBA League Pass,%s,%d,)' % (error, seconds))
