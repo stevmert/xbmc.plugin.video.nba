@@ -4,7 +4,6 @@ import calendar
 import datetime
 import time
 import json
-import re
 import sys
 import urllib
 import urllib2
@@ -71,7 +70,7 @@ class TV:
     @staticmethod
     def play_live():
         video_url = TV.get_live_url()
-        if video_url:
+        if video_url is not None:
             shared_data = SharedData()
             shared_data.set('playing', {
                 'what': 'nba_tv_live',
@@ -86,7 +85,7 @@ class TV:
         start_timestamp = vars.params.get('start_timestamp')
         duration = vars.params.get('duration')
         video_url = TV.get_episode_url(start_timestamp, duration)
-        if video_url:
+        if video_url is not None:
             shared_data = SharedData()
             shared_data.set('playing', {
                 'what': 'nba_tv_episode',
@@ -105,7 +104,7 @@ class TV:
         if not vars.cookies or force_login:
             common.login()
         if not vars.cookies:
-            return ''
+            return None
 
         url = vars.config['publish_endpoint']
         headers = {
@@ -125,7 +124,7 @@ class TV:
         }
 
         body = urllib.urlencode(body)
-        utils.log("the body of publishpoint request is: %s" % body, xbmc.LOGDEBUG)
+        utils.log('the body of publishpoint request is: %s' % body, xbmc.LOGDEBUG)
 
         try:
             request = urllib2.Request(url, body, headers)
@@ -134,12 +133,12 @@ class TV:
         except urllib2.HTTPError as err:
             utils.logHttpException(err, url)
             utils.littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50020))
-            return ''
+            return None
 
         xml = parseString(str(content))
-        url = xml.getElementsByTagName("path")[0].childNodes[0].nodeValue
-        utils.log("response URL from publishpoint: %s" % url, xbmc.LOGDEBUG)
-        drm = xml.getElementsByTagName("drmToken")[0].childNodes[0].nodeValue
+        url = xml.getElementsByTagName('path')[0].childNodes[0].nodeValue
+        utils.log('response URL from publishpoint: %s' % url, xbmc.LOGDEBUG)
+        drm = xml.getElementsByTagName('drmToken')[0].childNodes[0].nodeValue
         utils.log(drm, xbmc.LOGDEBUG)
 
         return {'url': url, 'drm': drm}
@@ -149,7 +148,7 @@ class TV:
         if not vars.cookies or force_login:
             common.login()
         if not vars.cookies:
-            return ''
+            return None
 
         url = vars.config['publish_endpoint']
         headers = {
@@ -167,7 +166,7 @@ class TV:
         }
 
         body = urllib.urlencode(body)
-        utils.log("the body of publishpoint request is: %s" % body, xbmc.LOGDEBUG)
+        utils.log('the body of publishpoint request is: %s' % body, xbmc.LOGDEBUG)
 
         try:
             request = urllib2.Request(url, body, headers)
@@ -176,12 +175,12 @@ class TV:
         except urllib2.HTTPError as err:
             utils.logHttpException(err, url)
             utils.littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50020))
-            return ''
+            return None
 
         xml = parseString(str(content))
-        url = xml.getElementsByTagName("path")[0].childNodes[0].nodeValue
-        utils.log("response URL from publishpoint: %s" % url, xbmc.LOGDEBUG)
-        drm = xml.getElementsByTagName("drmToken")[0].childNodes[0].nodeValue
+        url = xml.getElementsByTagName('path')[0].childNodes[0].nodeValue
+        utils.log('response URL from publishpoint: %s' % url, xbmc.LOGDEBUG)
+        drm = xml.getElementsByTagName('drmToken')[0].childNodes[0].nodeValue
         utils.log(drm, xbmc.LOGDEBUG)
 
         return {'url': url, 'drm': drm}
