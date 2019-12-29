@@ -4,16 +4,14 @@ import calendar
 import datetime
 import time
 import json
-import re
 import sys
 import urllib
 import urllib2
 from xml.dom.minidom import parseString
 
 import xbmc
-import xbmcplugin
-import xbmcgui
 import xbmcaddon
+import xbmcplugin
 
 import common
 from shareddata import SharedData
@@ -32,7 +30,7 @@ class TV:
         })
 
     @staticmethod
-    def episodeMenu():
+    def episode_menu():
         if vars.params.get("custom_date", False):
             date = datetime.datetime.combine(common.getDate(), datetime.time(hour=4, minute=0, second=0))
         else:
@@ -70,9 +68,9 @@ class TV:
             common.addListItem(name, '', 'nbatvliveepisode', iconimage=entry['image'], customparams=params)
 
     @staticmethod
-    def playLive():
-        video_url = TV.getLiveUrl()
-        if video_url:
+    def play_live():
+        video_url = TV.get_live_url()
+        if video_url is not None:
             shared_data = SharedData()
             shared_data.set('playing', {
                 'what': 'nba_tv_live',
@@ -83,11 +81,11 @@ class TV:
                 xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
     @staticmethod
-    def playEpisode():
+    def play_episode():
         start_timestamp = vars.params.get('start_timestamp')
         duration = vars.params.get('duration')
-        video_url = TV.getEpisodeUrl(start_timestamp, duration)
-        if video_url:
+        video_url = TV.get_episode_url(start_timestamp, duration)
+        if video_url is not None:
             shared_data = SharedData()
             shared_data.set('playing', {
                 'what': 'nba_tv_episode',
@@ -102,62 +100,55 @@ class TV:
                 xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
     @staticmethod
-    def getEpisodeUrl(start_timestamp, duration, force_login=False):
+    def get_episode_url(start_timestamp, duration, force_login=False):
         if not vars.cookies or force_login:
             common.login()
         if not vars.cookies:
-            return ''
+            return None
 
         url = vars.config['publish_endpoint']
         headers = {
             'Cookie': vars.cookies,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'iPad'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
         }
-        body = urllib.urlencode({
-            'id': "1",
+        body = {
             'type': 'channel',
-            'ppid': vars.player_id,
-            'nt': "1",
+            'id': 1,
+            'drmtoken': True,
+            'deviceid': xbmc.getInfoLabel('Network.MacAddress'),
             'st': start_timestamp,
             'dur': duration,
-        })
+            'pcid': vars.player_id,
+            'format': 'xml',
+        }
 
-        utils.log("nba tv live: the body of publishpoint request is: %s" % body, xbmc.LOGDEBUG)
+        body = urllib.urlencode(body)
+        utils.log('the body of publishpoint request is: %s' % body, xbmc.LOGDEBUG)
 
         try:
             request = urllib2.Request(url, body, headers)
             response = urllib2.urlopen(request)
             content = response.read()
         except urllib2.HTTPError as err:
-            utils.log("nba live tv: failed getting url: %s %s" % (url, err.read()), xbmc.LOGDEBUG)
+            utils.logHttpException(err, url)
             utils.littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50020))
-            return ''
+            return None
 
-        # Get the adaptive video url
         xml = parseString(str(content))
-        video_temp_url = xml.getElementsByTagName("path")[0].childNodes[0].nodeValue
-        utils.log("nba live tv: temp video url is %s" % video_temp_url, xbmc.LOGDEBUG)
+        url = xml.getElementsByTagName('path')[0].childNodes[0].nodeValue
+        utils.log('response URL from publishpoint: %s' % url, xbmc.LOGDEBUG)
+        drm = xml.getElementsByTagName('drmToken')[0].childNodes[0].nodeValue
+        utils.log(drm, xbmc.LOGDEBUG)
 
-        # transform the link
-        match = re.search('http://([^:]+)/([^?]+?)\?(.+)$', video_temp_url)
-        domain = match.group(1)
-        arguments = match.group(2)
-        querystring = match.group(3)
-
-        livecookies = "nlqptid=%s" % (querystring)
-        livecookiesencoded = urllib.quote(livecookies)
-        utils.log("live cookie: %s %s" % (querystring, livecookies), xbmc.LOGDEBUG)
-
-        video_url = "http://%s/%s?%s|User-Agent=%s&Cookie=%s" % (domain, arguments, querystring, vars.useragent, livecookiesencoded)
-        return video_url
+        return {'url': url, 'drm': drm}
 
     @staticmethod
-    def getLiveUrl(force_login=False):
+    def get_live_url(force_login=False):
         if not vars.cookies or force_login:
             common.login()
         if not vars.cookies:
-            return ''
+            return None
 
         url = vars.config['publish_endpoint']
         headers = {
@@ -175,7 +166,7 @@ class TV:
         }
 
         body = urllib.urlencode(body)
-        utils.log("the body of publishpoint request is: %s" % body, xbmc.LOGDEBUG)
+        utils.log('the body of publishpoint request is: %s' % body, xbmc.LOGDEBUG)
 
         try:
             request = urllib2.Request(url, body, headers)
@@ -184,12 +175,12 @@ class TV:
         except urllib2.HTTPError as err:
             utils.logHttpException(err, url)
             utils.littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50020))
-            return ''
+            return None
 
         xml = parseString(str(content))
-        url = xml.getElementsByTagName("path")[0].childNodes[0].nodeValue
-        utils.log("response URL from publishpoint: %s" % url, xbmc.LOGDEBUG)
-        drm = xml.getElementsByTagName("drmToken")[0].childNodes[0].nodeValue
+        url = xml.getElementsByTagName('path')[0].childNodes[0].nodeValue
+        utils.log('response URL from publishpoint: %s' % url, xbmc.LOGDEBUG)
+        drm = xml.getElementsByTagName('drmToken')[0].childNodes[0].nodeValue
         utils.log(drm, xbmc.LOGDEBUG)
 
         return {'url': url, 'drm': drm}
