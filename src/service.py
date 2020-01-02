@@ -8,6 +8,7 @@ from urlparse import urlparse, parse_qs
 
 import vars
 
+
 # Add src/service in load paths
 my_addon = xbmcaddon.Addon(vars.__addon_id__)
 addon_dir = xbmc.translatePath(my_addon.getAddonInfo('path')).decode('utf-8')

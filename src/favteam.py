@@ -11,7 +11,8 @@ from utils import *
 from common import *
 import vars
 
-def addFavTeamGameLinks(fromDate, favTeamAbbrs, video_type = 'archive'):
+
+def addFavTeamGameLinks(fromDate, favTeamAbbrs, video_type='archive'):
     try:
         if type(fromDate) is datetime.datetime:
             fromDate = "%04d/%d_%d" % (fromDate.year, fromDate.month, fromDate.day)

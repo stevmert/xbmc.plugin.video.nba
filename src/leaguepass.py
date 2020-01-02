@@ -15,6 +15,7 @@ import vars
 
 from tv import TV
 
+
 def mainMenu():
     addListItem('Live games', 'live', 'live', '', isfolder=True)
     addListItem('Games archive', 'archive', 'archive', '', isfolder=True)

@@ -92,7 +92,7 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
         if '.mpd' in url:
             selected_video_url = url
         else:
-            # transform the url
+            # Transform the url
             match = re.search('(https?)://([^:]+)/([^?]+?)\?(.+)$', url)
             protocol = match.group(1)
             domain = match.group(2)
@@ -151,7 +151,7 @@ def getHighlightGameUrl(video_id):
     utils.log("highlight video url: %s" % url, xbmc.LOGDEBUG)
     return url
 
-def addGamesLinks(date = '', video_type = "archive"):
+def addGamesLinks(date='', video_type="archive"):
     try:
         now_datetime_est = utils.nowEST()
         schedule = 'https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds_s2019/schedule/%04d/%d_%d.js?t=%d' % \
@@ -194,7 +194,7 @@ def addGamesLinks(date = '', video_type = "archive"):
                 if type(game_start_datetime_est) is not datetime.datetime:
                     game_start_datetime_est = now_datetime_est + timedelta(-30)
 
-                #guess end date by adding 4 hours to start date
+                # Guess end date by adding 4 hours to start date
                 game_end_datetime_est = game_start_datetime_est + timedelta(hours=4)
 
                 # Get playoff game number, if available
@@ -329,7 +329,7 @@ def chooseGameVideoMenu():
     nba_config = json.loads(utils.fetch(vars.config['config_endpoint']))
     nba_cameras = {}
     for camera in nba_config['content']['cameras']:
-        nba_cameras[ camera['number'] ] = camera['name']
+        nba_cameras[camera['number']] = camera['name']
 
     if has_away_feed:
         # Create the "Home" and "Away" list items
@@ -353,7 +353,7 @@ def chooseGameVideoMenu():
             }
             common.addListItem(listitemname, url="", mode="playgame", iconimage="", customparams=params)
     else:
-        #Add a "Home" list item
+        # Add a "Home" list item
         params = {
             'video_id': video_id,
             'video_type': video_type,
@@ -405,7 +405,7 @@ def chooseGameVideoMenu():
 
     xbmcplugin.endOfDirectory(handle=int(sys.argv[1]))
 
-def chooseGameMenu(mode, video_type, date2Use = None):
+def chooseGameMenu(mode, video_type, date2Use=None):
     try:
         if mode == "selectdate":
             date = common.getDate()
@@ -426,7 +426,7 @@ def chooseGameMenu(mode, video_type, date2Use = None):
         # Can't sort the games list correctly because XBMC treats file items and directory
         # items differently and puts directory first, then file items (home/away feeds
         # require a directory item while only-home-feed games is a file item)
-        #xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_DATE )
+        #xbmcplugin.addSortMethod(handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_DATE)
     except:
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=False)
         return None

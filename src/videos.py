@@ -12,6 +12,7 @@ from utils import *
 from common import *
 import vars
 
+
 def videoDateMenu():
     video_tag = vars.params.get("video_tag")
 
@@ -121,7 +122,7 @@ def videoListMenu():
 
         release_date = release_date.strftime('%d/%m/%Y')
 
-        #Runtime formatting
+        # Runtime formatting
         minutes, seconds = divmod(video['runtime'], 60)
         hours, minutes = divmod(minutes, 60)
         runtime = "%02d:%02d" % (minutes, seconds)
@@ -139,7 +140,7 @@ def videoListMenu():
     if vars.params.get("pagination"):
         next_page_name = xbmcaddon.Addon().getLocalizedString(50008)
 
-        #Add "next page" link
+        # Add "next page" link
         custom_params = {
             'video_tag': video_tag,
             'video_query': video_query,
@@ -183,7 +184,7 @@ def videoPlay():
     video_url = xml.getElementsByTagName("path")[0].childNodes[0].nodeValue
     log("videoPlay: video url is %s" % video_url, xbmc.LOGDEBUG)
 
-    #remove query string
+    # Remove query string
     #video_url = re.sub("\?[^?]+$", "", video_url)
 
     item = xbmcgui.ListItem(path=video_url)
