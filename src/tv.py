@@ -23,9 +23,9 @@ class TV:
 
     @staticmethod
     def menu():
-        common.addListItem('Live', '', 'nbatvlive', '')
-        common.addListItem('Today\'s programming', '', 'nbatvliveepisodemenu', '', isfolder=True)
-        common.addListItem('Select date', '', 'nbatvliveepisodemenu', '', isfolder=True, customparams={
+        common.addListItem('Live', '', 'nba_tv_play_live', '')
+        common.addListItem('Today\'s programming', '', 'nba_tv_episode_menu', '', isfolder=True)
+        common.addListItem('Select date', '', 'nba_tv_episode_menu', '', isfolder=True, customparams={
             'custom_date': True
         })
 
@@ -65,7 +65,7 @@ class TV:
             }
 
             name = "%s - %s (%s)" % (entry['start'], entry['title'], entry['duration'])
-            common.addListItem(name, '', 'nbatvliveepisode', iconimage=entry['image'], customparams=params)
+            common.addListItem(name, '', 'nba_tv_play_episode', iconimage=entry['image'], customparams=params)
 
     @staticmethod
     def play_live():
