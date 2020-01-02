@@ -45,37 +45,37 @@ def logHttpException(exception, url, body=""):
 
     log(log_string)
 
-#Get the current date and time in EST timezone
+# Get the current date and time in EST timezone
 def nowEST():
     if hasattr(nowEST, "datetime"):
         return nowEST.datetime
 
-    #Convert UTC to EST datetime
+    # Convert UTC to EST datetime
     timezone = pytz.timezone('America/New_York')
     utc_datetime = datetime.datetime.utcnow()
     est_datetime = utc_datetime + timezone.utcoffset(utc_datetime)
     log("UTC datetime: %s" % utc_datetime)
     log("EST datetime: %s" % est_datetime)
 
-    #Save the result to a static variable
+    # Save the result to a static variable
     nowEST.datetime = est_datetime
 
     return est_datetime
 
-#Returns a datetime in the local timezone
-#Thanks: http://stackoverflow.com/a/8328904/2265500
+# Returns a datetime in the local timezone
+# Thanks: http://stackoverflow.com/a/8328904/2265500
 def toLocalTimezone(date):
-    #Check settings
+    # Check settings
     if not vars.use_local_timezone:
         return date
 
-    #Pick the first timezone name found
+    # Pick the first timezone name found
     local_timezone = tzlocal()
 
-    #Get the NBA league pass timezone (EST)
+    # Get the NBA league pass timezone (EST)
     est_timezone = pytz.timezone('America/New_York')
 
-    #Localize the date to include the offset, then convert to local timezone
+    # Localize the date to include the offset, then convert to local timezone
     return est_timezone.localize(date).astimezone(local_timezone)
 
 def log(txt, severity=xbmc.LOGINFO):
@@ -83,7 +83,7 @@ def log(txt, severity=xbmc.LOGINFO):
         pass
     else:
         try:
-            message = ('##### %s: %s' % (vars.__addon_name__,txt) )
+            message = ('##### %s: %s' % (vars.__addon_name__, txt))
             xbmc.log(msg=message, level=severity)
         except UnicodeEncodeError:
             message = ('##### %s: UnicodeEncodeError' %vars.__addon_name__)
@@ -92,7 +92,7 @@ def log(txt, severity=xbmc.LOGINFO):
 def getParams():
     params = {}
     paramstring = sys.argv[2]
-    paramstring = paramstring.replace('?','')
+    paramstring = paramstring.replace('?', '')
     if len(paramstring) > 0:
         if paramstring[len(paramstring)-1] == '/':
             paramstring = paramstring[0:len(paramstring)-2]
@@ -102,11 +102,11 @@ def getParams():
     return params
 
 def addVideoListItem(name, url, iconimage):
-    return addListItem(name,url,"",iconimage,False,True)
+    return addListItem(name, url, '', iconimage, False, True)
 
 def addListItem(name, url, mode, iconimage, isfolder=False, usefullurl=False, customparams={}):
     if not hasattr(addListItem, "fanart_image"):
-        settings = xbmcaddon.Addon( id=vars.__addon_id__)
+        settings = xbmcaddon.Addon(id=vars.__addon_id__)
         addListItem.fanart_image = settings.getSetting("fanart_image")
 
     params = {
@@ -115,19 +115,19 @@ def addListItem(name, url, mode, iconimage, isfolder=False, usefullurl=False, cu
         'name': name
     }
 
-    #merge params with customparams
+    # Merge params with customparams
     params.update(customparams)
 
-    #Fix problems of encoding with urlencode and utf8 chars
+    # Fix problems of encoding with urlencode and utf8 chars
     for key, value in params.iteritems():
         params[key] = unicode(value).encode('utf-8')
 
-    #urlencode the params
+    # urlencode the params
     params = urllib.urlencode(params)
 
     generated_url = "%s?%s" % (sys.argv[0], params)
     liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-    liz.setInfo( type="Video", infoLabels={ "Title": name } )
+    liz.setInfo(type="Video", infoLabels={"Title": name})
 
     if addListItem.fanart_image:
         liz.setArt({

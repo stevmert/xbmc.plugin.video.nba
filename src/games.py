@@ -1,9 +1,9 @@
 
 
 import json
-import datetime, time, calendar, re, sys, traceback, urllib,urllib2
+import datetime, time, calendar, re, sys, traceback, urllib, urllib2
 from datetime import timedelta
-import xbmc,xbmcplugin,xbmcgui,xbmcaddon
+import xbmc, xbmcplugin, xbmcgui, xbmcaddon
 from xml.dom.minidom import parseString
 import common, utils
 import vars
@@ -123,7 +123,7 @@ def getHighlightGameUrl(video_id):
         'Content-Type': 'application/x-www-form-urlencoded',
         'User-Agent': "AppleCoreMedia/1.0.0.8C148a (iPad; U; CPU OS 6_2_1 like Mac OS X; en_us)",
     }
-    
+
     body = urllib.urlencode({
         'extid': str(video_id),
         'plid': vars.player_id,
@@ -149,7 +149,6 @@ def getHighlightGameUrl(video_id):
     #url, _,_ = url.partition("?")
 
     utils.log("highlight video url: %s" % url, xbmc.LOGDEBUG)
-    
     return url
 
 def addGamesLinks(date = '', video_type = "archive"):
@@ -185,7 +184,7 @@ def addGamesLinks(date = '', video_type = "archive"):
 
                 # Try to convert start date to datetime
                 try:
-                    game_start_datetime_est = datetime.datetime.strptime(game_start_date_est, "%Y-%m-%dT%H:%M:%S.%f" )
+                    game_start_datetime_est = datetime.datetime.strptime(game_start_date_est, "%Y-%m-%dT%H:%M:%S.%f")
                 except:
                     game_start_datetime_est = datetime.datetime.fromtimestamp(time.mktime(time.strptime(game_start_date_est, "%Y-%m-%dT%H:%M:%S.%f")))
 
@@ -280,8 +279,7 @@ def addGamesLinks(date = '', video_type = "archive"):
                                 params['duration'] = end_time - start_time
 
                         # Add a directory item that contains home/away/condensed items
-                        common.addListItem(name, url="", mode="gamechoosevideo",
-                            iconimage=thumbnail_url, isfolder=True, customparams=params)
+                        common.addListItem(name, url="", mode="gamechoosevideo", iconimage=thumbnail_url, isfolder=True, customparams=params)
 
         if unknown_teams:
             utils.log("Unknown teams: %s" % str(unknown_teams), xbmc.LOGWARNING)
@@ -416,8 +414,8 @@ def chooseGameMenu(mode, video_type, date2Use = None):
         else:
             date = utils.nowEST()
             utils.log("current date (america timezone) is %s" % str(date), xbmc.LOGDEBUG)
-        
-        # starts on mondays
+
+        # Starts on mondays
         day = date.isoweekday()
         date = date - timedelta(day-1)
         if mode == "lastweek":
@@ -430,5 +428,5 @@ def chooseGameMenu(mode, video_type, date2Use = None):
         # require a directory item while only-home-feed games is a file item)
         #xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_DATE )
     except:
-        xbmcplugin.endOfDirectory(handle = int(sys.argv[1]),succeeded=False)
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=False)
         return None

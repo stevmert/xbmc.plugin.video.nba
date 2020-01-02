@@ -2,15 +2,15 @@
 
 from tv import TV
 
-import xbmc,xbmcaddon
+import xbmc, xbmcaddon
 import time, urllib, os, sys
 from urlparse import urlparse, parse_qs
 
 import vars
 
-#Add src/service in load paths
+# Add src/service in load paths
 my_addon = xbmcaddon.Addon(vars.__addon_id__)
-addon_dir = xbmc.translatePath( my_addon.getAddonInfo('path') ).decode('utf-8')
+addon_dir = xbmc.translatePath(my_addon.getAddonInfo('path')).decode('utf-8')
 sys.path.append(os.path.join(addon_dir, 'src', 'service'))
 
 import utils
@@ -39,18 +39,17 @@ class PollingThread(BaseThread):
 
         if video_url:
             self.readExpiresFromUrl(video_url)
-            utils.log("Updating live url from service, new url (%s) and expire (%d)" 
-                % (video_url, self.expires))
+            utils.log("Updating live url from service, new url (%s) and expire (%d)" % (video_url, self.expires))
 
             self.player.play(video_url)
 
     def readExpiresFromUrl(self, url):
         url_parts = urlparse(url)
 
-        #Parse query string to dictionary
+        # Parse query string to dictionary
         query_params = parse_qs(url_parts.query)
 
-        #Get the hdnea param, where the "expires" param is
+        # Get the hdnea param, where the "expires" param is
         hdnea_params = query_params.get("hdnea")[0]
         hdnea_params = hdnea_params.replace('~', '&')
         hdnea_params = urllib.unquote(hdnea_params)
@@ -63,21 +62,20 @@ class PollingThread(BaseThread):
             try:
                 current_playing_url = self.player.getPlayingFile()
                 self.readExpiresFromUrl(current_playing_url)
-                utils.log("Playing url: %s - playing cache: %s" % 
-                    (current_playing_url, self.shared_data.get("playing")), xbmc.LOGDEBUG)
+                utils.log("Playing url: %s - playing cache: %s" % (current_playing_url, self.shared_data.get("playing")), xbmc.LOGDEBUG)
             except:
                 pass
 
             if self.shared_data.get("playing.what"):
-                #Wait second iteration before checking the expiration
+                # Wait second iteration before checking the expiration
                 if self.shared_data.get("playing.second_iteration") != "1":
-                    xbmc.sleep(2000);
+                    xbmc.sleep(2000)
                     self.shared_data.set("playing.second_iteration", "1")
-                    continue;
+                    continue
 
                 timestamp = time.time()
 
-                #Avoid refreshing too fast, let at least one minute pass from the last refresh
+                # Avoid refreshing too fast, let at least one minute pass from the last refresh
                 expire_timestamp = max(self.expires, self.last_refresh + 60)
 
                 utils.log("%d seconds to url refresh" % (expire_timestamp - timestamp))
@@ -89,12 +87,12 @@ class PollingThread(BaseThread):
 
             if not self.should_keep_running():
                 utils.log("Interrupting service loop")
-                break 
+                break
 
 def main():
     utils.log("starting service...")
 
-    #Reset currently playing video
+    # Reset currently playing video
     shared_data = SharedData()
     shared_data.set("playing", {})
 

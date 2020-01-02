@@ -1,7 +1,9 @@
-import json,urllib2
+
+
+import json, urllib2
 import datetime, time
 from datetime import timedelta
-import xbmc,xbmcgui
+import xbmc, xbmcgui
 import traceback
 import calendar
 
@@ -13,7 +15,7 @@ def addFavTeamGameLinks(fromDate, favTeamAbbrs, video_type = 'archive'):
     try:
         if type(fromDate) is datetime.datetime:
             fromDate = "%04d/%d_%d" % (fromDate.year, fromDate.month, fromDate.day)
-        schedule = 'https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds_s2019/schedule/' + fromDate +  '.js?t=' + "%d"  %time.time()
+        schedule = 'https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds_s2019/schedule/' + fromDate + '.js?t=' + "%d" % time.time()
         log('Requesting %s' % schedule, xbmc.LOGDEBUG)
 
         now_datetime_est = nowEST()
@@ -40,7 +42,7 @@ def addFavTeamGameLinks(fromDate, favTeamAbbrs, video_type = 'archive'):
 
                 # Try to convert start date to datetime
                 try:
-                    game_start_datetime_est = datetime.datetime.strptime(game_start_date_est, "%Y-%m-%dT%H:%M:%S.%f" )
+                    game_start_datetime_est = datetime.datetime.strptime(game_start_date_est, "%Y-%m-%dT%H:%M:%S.%f")
                 except:
                     game_start_datetime_est = datetime.datetime.fromtimestamp(time.mktime(time.strptime(game_start_date_est, "%Y-%m-%dT%H:%M:%S.%f")))
 
@@ -50,7 +52,7 @@ def addFavTeamGameLinks(fromDate, favTeamAbbrs, video_type = 'archive'):
                 if type(game_start_datetime_est) is not datetime.datetime:
                     game_start_datetime_est = now_datetime_est + timedelta(-30)
 
-                #guess end date by adding 4 hours to start date
+                # Guess end date by adding 4 hours to start date
                 game_end_datetime_est = game_start_datetime_est + timedelta(hours=4)
 
                 if game_id != '' and (v.lower() in favTeamAbbrs or h.lower() in favTeamAbbrs):
@@ -113,7 +115,7 @@ def addFavTeamGameLinks(fromDate, favTeamAbbrs, video_type = 'archive'):
                                 end_time = calendar.timegm(time.strptime(end_time, '%Y-%m-%dT%H:%M:%S.%f')) * 1000
                                 params['end_time'] = end_time
                                 params['duration'] = end_time - start_time
-                                
+
                         addListItem(name, url="", mode="playgame", iconimage=thumbnail_url, customparams=params)
 
         if unknown_teams:
@@ -153,7 +155,7 @@ def favTeamMenu():
 
 def favTeamOlderMenu():
     updateFavTeam()
-    
+
     log("Loading older games for: %s" % str(vars.fav_team_abbrs))
     tday = getCurrentMonday() - timedelta(14)
     while monthIsInSeason(tday.month):

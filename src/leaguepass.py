@@ -46,8 +46,7 @@ def archiveMenu():
         params = {
             'oldseasonyear': year
         }
-        addListItem('%d-%d season' % (year, year+1), url="", mode='oldseason', 
-            iconimage='', isfolder=True, customparams=params)
+        addListItem('%d-%d season' % (year, year + 1), url="", mode='oldseason', iconimage='', isfolder=True, customparams=params)
 
 def liveMenu():
     chooseGameMenu('', 'live')
@@ -70,7 +69,7 @@ mode = params.get("mode", None)
 # Save the params in 'vars' to retrieve it in the functions
 vars.params = params;
 
-if mode == None:
+if mode is None:
     getFanartImage()
     mainMenu()
 elif mode == "archive":
