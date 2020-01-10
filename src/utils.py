@@ -48,9 +48,9 @@ def logHttpException(exception, url, body=""):
 def tznow(tz):
     """Returns the current aware datetime in timezone tz."""
     now_utc = datetime.datetime.now(pytz.utc)
-    log('Now %s: %s' % (pytz.utc.tzname(now_utc), now_utc), xbmc.LOGDEBUG)
+    log('Now %s: %s' % (now_utc.tzname(), now_utc), xbmc.LOGDEBUG)
     now_tz = now_utc.astimezone(tz)
-    log('Now %s: %s' % (tz.tzname(now_tz), now_tz), xbmc.LOGDEBUG)
+    log('Now %s: %s' % (now_tz.tzname(), now_tz), xbmc.LOGDEBUG)
     return now_tz
 
 # Get the current date and time in EST timezone
@@ -135,7 +135,7 @@ def addListItem(name, url, mode, iconimage, isfolder=False, usefullurl=False, cu
 
     generated_url = "%s?%s" % (sys.argv[0], params)
     liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-    liz.setInfo(type="Video", infoLabels={"Title": name})
+    liz.setInfo('video', {'title': name})
 
     if addListItem.fanart_image:
         liz.setArt({

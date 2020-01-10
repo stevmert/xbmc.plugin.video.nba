@@ -59,7 +59,7 @@ class TV:
             utils.log(params, xbmc.LOGDEBUG)
 
             name = '%s %s: %s' % (
-                entry['start'], et_tz.tzname(dt_et), entry['showTitle'] if entry['showTitle'] else entry['title'])
+                entry['start'], dt_et.tzname(), entry['showTitle'] if entry['showTitle'] else entry['title'])
             common.addListItem(name, '', 'nba_tv_play_episode', iconimage=entry['image'], customparams=params)
 
     @staticmethod
