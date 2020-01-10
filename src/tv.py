@@ -1,6 +1,5 @@
 
 
-import calendar
 import datetime
 import time
 import json
@@ -15,6 +14,7 @@ import xbmcplugin
 
 import common
 from shareddata import SharedData
+import pytz
 import utils
 import vars
 
@@ -31,40 +31,35 @@ class TV:
 
     @staticmethod
     def episode_menu():
-        if vars.params.get("custom_date", False):
-            date = datetime.datetime.combine(common.getDate(), datetime.time(hour=4, minute=0, second=0))
-        else:
-            date = utils.nowEST().replace(hour=4, minute=0, second=0)
+        et_tz = pytz.timezone('US/Eastern')
+        date_et = common.get_date() if vars.params.get('custom_date', False) else utils.tznow(et_tz).date()
 
-        utils.log("date for episodes: %s (from %s)" % (date, utils.nowEST()), xbmc.LOGDEBUG)
-        schedule = 'https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds/epg/2019/%s_%s.js?t=%d' % (
-            date.month, date.day, time.time())
-        utils.log('Requesting %s' % schedule, xbmc.LOGDEBUG)
+        # Avoid possible caching by using query string
+        epg_url = 'https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds/epg/%d/%d_%d.js?t=%d' % (
+            date_et.year, date_et.month, date_et.day, time.time())
+        response = utils.fetch(epg_url)
+        g_epg = json.loads(response[response.find('['):])
 
-        now_timestamp = int(calendar.timegm(date.timetuple()))
-        now_timestamp_milliseconds = now_timestamp * 1000
+        for epg_item in g_epg:
+            entry = epg_item['entry']
 
-        req = urllib2.Request(schedule, None)
-        response = str(urllib2.urlopen(req).read())
-        json_response = json.loads(response[response.find("["):])
+            start_et_hours, start_et_minutes = map(int, entry['start'].split(':'))
+            duration_hours, duration_minutes = map(int, entry['duration'].split(':'))
 
-        for entry in json_response:
-            entry = entry['entry']
+            dt_et = et_tz.localize(datetime.datetime(date_et.year, date_et.month, date_et.day, start_et_hours, start_et_minutes))
+            dt_utc = dt_et.astimezone(pytz.utc)
 
-            start_hours, start_minutes = entry['start'].split(':')
-            start_timestamp_milliseconds = now_timestamp_milliseconds + (int(start_hours) * 60 * 60 + int(start_minutes) * 60) * 1000
-
-            utils.log("date for episode %s: %d (from %d)" % (entry['title'], start_timestamp_milliseconds, now_timestamp_milliseconds), xbmc.LOGDEBUG)
-
-            duration_hours, duration_minutes = entry['duration'].split(":")
-            duration_milliseconds = (int(duration_hours) * 60 * 60 + int(duration_minutes) * 60) * 1000
+            start_timestamp = int((dt_utc - datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)).total_seconds()) * 1000  # in milliseconds
+            duration = (duration_hours * 60 + duration_minutes) * 60 * 1000  # in milliseconds
 
             params = {
-                'duration': duration_milliseconds,
-                'start_timestamp': start_timestamp_milliseconds
+                'start_timestamp': start_timestamp,
+                'duration': duration,
             }
+            utils.log(params, xbmc.LOGDEBUG)
 
-            name = "%s - %s (%s)" % (entry['start'], entry['title'], entry['duration'])
+            name = '%s %s: %s' % (
+                entry['start'], et_tz.tzname(dt_et), entry['showTitle'] if entry['showTitle'] else entry['title'])
             common.addListItem(name, '', 'nba_tv_play_episode', iconimage=entry['image'], customparams=params)
 
     @staticmethod

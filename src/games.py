@@ -408,7 +408,7 @@ def chooseGameVideoMenu():
 def chooseGameMenu(mode, video_type, date2Use=None):
     try:
         if mode == "selectdate":
-            date = common.getDate()
+            date = common.get_date()
         elif mode == "oldseason":
             date = date2Use
         else:

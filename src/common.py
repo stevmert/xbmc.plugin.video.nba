@@ -62,7 +62,7 @@ def getFanartImage():
         # I don't care
         pass
 
-def getDate(default='', heading='Please enter date (YYYY/MM/DD)', hidden=False):
+def get_date(default='', heading='Please enter date (YYYY/MM/DD)', hidden=False):
     now = datetime.datetime.now()
     default = "%04d" % now.year + '/' + "%02d" % now.month + '/' + "%02d" % now.day
     keyboard = xbmc.Keyboard(default, heading, hidden)

@@ -45,6 +45,14 @@ def logHttpException(exception, url, body=""):
 
     log(log_string)
 
+def tznow(tz):
+    """Returns the current aware datetime in timezone tz."""
+    now_utc = datetime.datetime.now(pytz.utc)
+    log('Now %s: %s' % (pytz.utc.tzname(now_utc), now_utc), xbmc.LOGDEBUG)
+    now_tz = now_utc.astimezone(tz)
+    log('Now %s: %s' % (tz.tzname(now_tz), now_tz), xbmc.LOGDEBUG)
+    return now_tz
+
 # Get the current date and time in EST timezone
 def nowEST():
     if hasattr(nowEST, "datetime"):
