@@ -15,17 +15,18 @@ import vars
 
 from tv import TV
 
+
 def mainMenu():
     addListItem('Live games', 'live', 'live', '', isfolder=True)
     addListItem('Games archive', 'archive', 'archive', '', isfolder=True)
-    addListItem('NBA TV', '', 'nbatvlivemenu', '', isfolder=True)
-    addListItem('Videos', '', 'video', '', isfolder=True)
+    addListItem('NBA TV', '', 'nba_tv_menu', '', isfolder=True)
+    addListItem('Video', '', 'video', '', isfolder=True)
     addListItem('Favorite team\'s games', '', 'favteam', '', isfolder=True)
 
 def archiveMenu():
-    addListItem('This week', "archive", 'thisweek' ,'', True)
-    addListItem('Last week' , "archive", 'lastweek','', True)
-    addListItem('Select date' , "archive", 'selectdate','', True)
+    addListItem('This week', 'archive', 'thisweek', '', isfolder=True)
+    addListItem('Last week', 'archive', 'lastweek', '', isfolder=True)
+    addListItem('Select date', 'archive', 'selectdate', '', isfolder=True)
 
     # Dynamic previous season, so I don't have to update this every time!
     now = date.today()
@@ -46,8 +47,7 @@ def archiveMenu():
         params = {
             'oldseasonyear': year
         }
-        addListItem('%d-%d season' % (year, year+1), url="", mode='oldseason', 
-            iconimage='', isfolder=True, customparams=params)
+        addListItem('%d-%d season' % (year, year + 1), url="", mode='oldseason', iconimage='', isfolder=True, customparams=params)
 
 def liveMenu():
     chooseGameMenu('', 'live')
@@ -70,7 +70,7 @@ mode = params.get("mode", None)
 # Save the params in 'vars' to retrieve it in the functions
 vars.params = params;
 
-if mode == None:
+if mode is None:
     getFanartImage()
     mainMenu()
 elif mode == "archive":
@@ -92,13 +92,13 @@ elif mode.startswith("video"):
         videoDateMenu()
     else:
         videoMenu()
-elif mode == 'nbatvlivemenu':
+elif mode == 'nba_tv_menu':
     TV.menu()
-elif mode == 'nbatvlive':
+elif mode == 'nba_tv_play_live':
     TV.play_live()
-elif mode == 'nbatvliveepisodemenu':
+elif mode == 'nba_tv_episode_menu':
     TV.episode_menu()
-elif mode == 'nbatvliveepisode':
+elif mode == 'nba_tv_play_episode':
     TV.play_episode()
 elif mode == "favteam":
     if url == "older":

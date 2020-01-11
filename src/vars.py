@@ -1,6 +1,9 @@
-import xbmc,xbmcaddon
+
+
+import xbmc, xbmcaddon
 import json
-import os,binascii
+import os, binascii
+
 
 try:
     import StorageServer
@@ -24,7 +27,7 @@ cache.table_name = "nbaleaguepass"
 
 cookies = ''
 player_id = binascii.b2a_hex(os.urandom(16))
-addon_dir = xbmc.translatePath( settings.getAddonInfo('path') ).decode('utf-8')
+addon_dir = xbmc.translatePath(settings.getAddonInfo('path')).decode('utf-8')
 
 # the default fanart image
 fanart_image = os.path.join(addon_dir, "fanart.jpg")

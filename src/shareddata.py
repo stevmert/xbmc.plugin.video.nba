@@ -1,5 +1,10 @@
-import xbmc,xbmcvfs,xbmcaddon
+
+
 import json
+
+import xbmc
+import xbmcaddon
+import xbmcvfs
 
 
 class SharedData:

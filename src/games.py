@@ -1,6 +1,9 @@
-import json, datetime, time, calendar, re, sys, traceback, urllib,urllib2
+
+
+import json
+import datetime, time, calendar, re, sys, traceback, urllib, urllib2
 from datetime import timedelta
-import xbmc,xbmcplugin,xbmcgui,xbmcaddon
+import xbmc, xbmcplugin, xbmcgui, xbmcaddon
 from xml.dom.minidom import parseString
 import common, utils
 import vars
@@ -89,7 +92,7 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
         if '.mpd' in url:
             selected_video_url = url
         else:
-            # transform the url
+            # Transform the url
             match = re.search('(https?)://([^:]+)/([^?]+?)\?(.+)$', url)
             protocol = match.group(1)
             domain = match.group(2)
@@ -120,7 +123,7 @@ def getHighlightGameUrl(video_id):
         'Content-Type': 'application/x-www-form-urlencoded',
         'User-Agent': "AppleCoreMedia/1.0.0.8C148a (iPad; U; CPU OS 6_2_1 like Mac OS X; en_us)",
     }
-    
+
     body = urllib.urlencode({
         'extid': str(video_id),
         'plid': vars.player_id,
@@ -146,10 +149,9 @@ def getHighlightGameUrl(video_id):
     #url, _,_ = url.partition("?")
 
     utils.log("highlight video url: %s" % url, xbmc.LOGDEBUG)
-    
     return url
 
-def addGamesLinks(date = '', video_type = "archive"):
+def addGamesLinks(date='', video_type="archive"):
     try:
         now_datetime_est = utils.nowEST()
         schedule = 'https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds_s2019/schedule/%04d/%d_%d.js?t=%d' % \
@@ -182,7 +184,7 @@ def addGamesLinks(date = '', video_type = "archive"):
 
                 # Try to convert start date to datetime
                 try:
-                    game_start_datetime_est = datetime.datetime.strptime(game_start_date_est, "%Y-%m-%dT%H:%M:%S.%f" )
+                    game_start_datetime_est = datetime.datetime.strptime(game_start_date_est, "%Y-%m-%dT%H:%M:%S.%f")
                 except:
                     game_start_datetime_est = datetime.datetime.fromtimestamp(time.mktime(time.strptime(game_start_date_est, "%Y-%m-%dT%H:%M:%S.%f")))
 
@@ -192,7 +194,7 @@ def addGamesLinks(date = '', video_type = "archive"):
                 if type(game_start_datetime_est) is not datetime.datetime:
                     game_start_datetime_est = now_datetime_est + timedelta(-30)
 
-                #guess end date by adding 4 hours to start date
+                # Guess end date by adding 4 hours to start date
                 game_end_datetime_est = game_start_datetime_est + timedelta(hours=4)
 
                 # Get playoff game number, if available
@@ -277,8 +279,7 @@ def addGamesLinks(date = '', video_type = "archive"):
                                 params['duration'] = end_time - start_time
 
                         # Add a directory item that contains home/away/condensed items
-                        common.addListItem(name, url="", mode="gamechoosevideo",
-                            iconimage=thumbnail_url, isfolder=True, customparams=params)
+                        common.addListItem(name, url="", mode="gamechoosevideo", iconimage=thumbnail_url, isfolder=True, customparams=params)
 
         if unknown_teams:
             utils.log("Unknown teams: %s" % str(unknown_teams), xbmc.LOGWARNING)
@@ -317,7 +318,7 @@ def chooseGameVideoMenu():
     has_condensed_game = vars.params.get("has_condensed_game", "0") == "1"
     start_time = vars.params.get("start_time")
     duration = vars.params.get("duration")
-    game_data_json = utils.fetch_json(vars.config['game_data_endpoint'] % seo_name)
+    game_data_json = json.loads(utils.fetch(vars.config['game_data_endpoint'] % seo_name))
     game_state = game_data_json['gameState']
     game_home_team = vars.params.get("home_team")
     game_visitor_team = vars.params.get("visitor_team")
@@ -325,10 +326,10 @@ def chooseGameVideoMenu():
     if 'multiCameras' in game_data_json:
         game_cameras = game_data_json['multiCameras'].split(",")
 
-    nba_config = utils.fetch_json(vars.config['config_endpoint'])
+    nba_config = json.loads(utils.fetch(vars.config['config_endpoint']))
     nba_cameras = {}
     for camera in nba_config['content']['cameras']:
-        nba_cameras[ camera['number'] ] = camera['name']
+        nba_cameras[camera['number']] = camera['name']
 
     if has_away_feed:
         # Create the "Home" and "Away" list items
@@ -352,7 +353,7 @@ def chooseGameVideoMenu():
             }
             common.addListItem(listitemname, url="", mode="playgame", iconimage="", customparams=params)
     else:
-        #Add a "Home" list item
+        # Add a "Home" list item
         params = {
             'video_id': video_id,
             'video_type': video_type,
@@ -404,17 +405,17 @@ def chooseGameVideoMenu():
 
     xbmcplugin.endOfDirectory(handle=int(sys.argv[1]))
 
-def chooseGameMenu(mode, video_type, date2Use = None):
+def chooseGameMenu(mode, video_type, date2Use=None):
     try:
         if mode == "selectdate":
-            date = common.getDate()
+            date = common.get_date()
         elif mode == "oldseason":
             date = date2Use
         else:
             date = utils.nowEST()
             utils.log("current date (america timezone) is %s" % str(date), xbmc.LOGDEBUG)
-        
-        # starts on mondays
+
+        # Starts on mondays
         day = date.isoweekday()
         date = date - timedelta(day-1)
         if mode == "lastweek":
@@ -425,7 +426,7 @@ def chooseGameMenu(mode, video_type, date2Use = None):
         # Can't sort the games list correctly because XBMC treats file items and directory
         # items differently and puts directory first, then file items (home/away feeds
         # require a directory item while only-home-feed games is a file item)
-        #xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_DATE )
+        #xbmcplugin.addSortMethod(handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_DATE)
     except:
-        xbmcplugin.endOfDirectory(handle = int(sys.argv[1]),succeeded=False)
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=False)
         return None

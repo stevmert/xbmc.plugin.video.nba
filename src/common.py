@@ -1,7 +1,9 @@
+
+
 import json
 import datetime
-import urllib,urllib2
-import xbmc,xbmcaddon
+import urllib, urllib2
+import xbmc, xbmcaddon
 import re
 from xml.dom.minidom import parseString
 
@@ -40,7 +42,7 @@ def updateFavTeam():
                 xbmc.log(msg="fav_team_abbrs set to %s" % str(vars.fav_team_abbrs), level=xbmc.LOGWARNING)
 
 def getFanartImage():
-    # get the feed url
+    # Get the feed url
     feed_url = "https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds/common/dl.js"
     xbmc.log(feed_url, xbmc.LOGINFO)
     req = urllib2.Request(feed_url, None)
@@ -60,26 +62,26 @@ def getFanartImage():
         # I don't care
         pass
 
-def getDate( default= '', heading='Please enter date (YYYY/MM/DD)', hidden=False ):
+def get_date(default='', heading='Please enter date (YYYY/MM/DD)', hidden=False):
     now = datetime.datetime.now()
     default = "%04d" % now.year + '/' + "%02d" % now.month + '/' + "%02d" % now.day
-    keyboard = xbmc.Keyboard( default, heading, hidden )
+    keyboard = xbmc.Keyboard(default, heading, hidden)
     keyboard.doModal()
     ret = datetime.date.today()
     if keyboard.isConfirmed():
-        sDate = unicode( keyboard.getText(), "utf-8" )
+        sDate = unicode(keyboard.getText(), "utf-8")
         temp = sDate.split("/")
-        ret = datetime.date(int(temp[0]),  int(temp[1]), int(temp[2]))
+        ret = datetime.date(int(temp[0]), int(temp[1]), int(temp[2]))
     return ret
 
 def login():
-    username = vars.settings.getSetting( id="username")
-    password = vars.settings.getSetting( id="password")
-    
+    username = vars.settings.getSetting(id="username")
+    password = vars.settings.getSetting(id="password")
+
     if not username or not password:
-        littleErrorPopup( xbmcaddon.Addon().getLocalizedString(50024) )
+        littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50024))
         return ''
-    
+
     try:
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         body = urllib.urlencode({
@@ -92,13 +94,13 @@ def login():
         content = response.read()
     except urllib2.HTTPError as e:
         log("Login failed with code: %d and content: %s" % (e.getcode(), e.read()))
-        littleErrorPopup( xbmcaddon.Addon().getLocalizedString(50022) )
+        littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50022))
         return ''
 
     # Check the response xml
     xml = parseString(str(content))
     if xml.getElementsByTagName("code")[0].firstChild.nodeValue == "loginlocked":
-        littleErrorPopup( xbmcaddon.Addon().getLocalizedString(50021) )
+        littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50021))
         return ''
     else:
         # logged in

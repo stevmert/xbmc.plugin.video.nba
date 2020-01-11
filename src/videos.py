@@ -1,8 +1,10 @@
+
+
 import json
 import datetime, time
 from datetime import timedelta
-import urllib,urllib2
-import xbmc,xbmcplugin,xbmcgui,xbmcaddon
+import urllib, urllib2
+import xbmc, xbmcplugin, xbmcgui, xbmcaddon
 from xml.dom.minidom import parseString
 import re
 
@@ -10,9 +12,10 @@ from utils import *
 from common import *
 import vars
 
+
 def videoDateMenu():
     video_tag = vars.params.get("video_tag")
-    
+
     dates = []
     current_date = datetime.date.today() - timedelta(days=1)
     last_date = current_date - timedelta(days=7)
@@ -22,9 +25,8 @@ def videoDateMenu():
 
     for date in dates:
         params = {'date': date, 'video_tag': video_tag}
-        addListItem(name=str(date), url='', mode='videolist', iconimage='',
-            isfolder=True, customparams=params)
-    xbmcplugin.endOfDirectory(handle = int(sys.argv[1]))
+        addListItem(name=str(date), url='', mode='videolist', iconimage='', isfolder=True, customparams=params)
+    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]))
 
 def videoMenu():
     addListItem('Top Plays', '', 'videodate', '', True, customparams={'video_tag':'top_plays'})
@@ -62,7 +64,7 @@ def videoListMenu():
     if date:
         selected_date = None
         try:
-            selected_date = datetime.datetime.strptime(date, "%Y-%m-%d" )
+            selected_date = datetime.datetime.strptime(date, "%Y-%m-%d")
         except:
             selected_date = datetime.datetime.fromtimestamp(time.mktime(time.strptime(date, "%Y-%m-%d")))
 
@@ -73,7 +75,7 @@ def videoListMenu():
         query.append("(%s)" % video_query)
     query = " OR ".join(query)
 
-    #Add the date if passed from the menu
+    # Add the date if passed from the menu
     if date:
         query += " AND releaseDate:[%s TO %s]" % (
             selected_date.strftime('%Y-%m-%dT00:00:00.000Z'),
@@ -102,7 +104,7 @@ def videoListMenu():
     for video in jsonresponse['response']['docs']:
         name = video['name']
 
-        #Parse release date - nba uses different formats :facepalm:
+        # Parse release date - nba uses different formats :facepalm:
         date_formats = ["%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%dT%H:%M:%S.%fZ"]
         try:
             for date_format in date_formats:
@@ -120,7 +122,7 @@ def videoListMenu():
 
         release_date = release_date.strftime('%d/%m/%Y')
 
-        #Runtime formatting
+        # Runtime formatting
         minutes, seconds = divmod(video['runtime'], 60)
         hours, minutes = divmod(minutes, 60)
         runtime = "%02d:%02d" % (minutes, seconds)
@@ -138,8 +140,8 @@ def videoListMenu():
     if vars.params.get("pagination"):
         next_page_name = xbmcaddon.Addon().getLocalizedString(50008)
 
-        #Add "next page" link
-        custom_params={
+        # Add "next page" link
+        custom_params = {
             'video_tag': video_tag,
             'video_query': video_query,
             'page': page + 1,
@@ -150,7 +152,7 @@ def videoListMenu():
 
         addListItem(next_page_name, '', 'videolist', '', True, customparams=custom_params)
 
-    xbmcplugin.endOfDirectory(handle = int(sys.argv[1]))
+    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]))
 
 def videoPlay():
     video_id = vars.params.get("url")
@@ -182,7 +184,7 @@ def videoPlay():
     video_url = xml.getElementsByTagName("path")[0].childNodes[0].nodeValue
     log("videoPlay: video url is %s" % video_url, xbmc.LOGDEBUG)
 
-    #remove query string
+    # Remove query string
     #video_url = re.sub("\?[^?]+$", "", video_url)
 
     item = xbmcgui.ListItem(path=video_url)
