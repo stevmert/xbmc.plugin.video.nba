@@ -8,13 +8,14 @@ import urllib
 import urllib2
 from xml.dom.minidom import parseString
 
+import pytz
+
 import xbmc
 import xbmcaddon
 import xbmcplugin
 
 import common
 from shareddata import SharedData
-import pytz
 import utils
 import vars
 

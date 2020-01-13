@@ -8,6 +8,8 @@ import urllib2
 import urlparse
 import sys
 
+import pytz
+
 import xbmc
 import xbmcaddon
 import xbmcgui
@@ -16,7 +18,6 @@ import xbmcvfs
 
 from dateutil.tz import tzlocal
 from PIL import Image, ImageOps
-import pytz
 import vars
 
 
