@@ -23,10 +23,10 @@ def getPlayableItem(video):
                 item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
                 item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
                 item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')  # TODO check this
-                item.setContentLookup(False)  # TODO check this
+                item.setContentLookup(True)
                 # TODO: get license url from config
-                licUrl = 'https://prod-lic2widevine.sd-ngp.net/proxy|authorization=bearer ' + video['drm'] + '|R{SSM}|'
-                item.setProperty('inputstream.adaptive.license_key', licUrl)
+                lic_url = 'https://prod-lic2widevine.sd-ngp.net/proxy|authorization=bearer ' + video['drm'] + '|R{SSM}|'
+                item.setProperty('inputstream.adaptive.license_key', lic_url)
 
     return item
 
