@@ -8,7 +8,7 @@ import urllib2
 import urlparse
 import sys
 
-import dateutil
+from dateutil import tz
 import pytz
 
 import xbmc
@@ -79,7 +79,7 @@ def toLocalTimezone(date):
         return date
 
     # Pick the first timezone name found
-    local_timezone = dateutil.tz.tzlocal()
+    local_timezone = tz.tzlocal()
     # Get the NBA league pass timezone (EST)
     est_timezone = pytz.timezone('US/Eastern')
     # Localize the date to include the offset, then convert to local timezone
