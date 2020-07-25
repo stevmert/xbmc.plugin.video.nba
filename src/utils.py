@@ -8,15 +8,16 @@ import urllib2
 import urlparse
 import sys
 
+from dateutil import tz
+import pytz
+
 import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
 import xbmcvfs
 
-from dateutil.tz import tzlocal
 from PIL import Image, ImageOps
-import pytz
 import vars
 
 
@@ -59,7 +60,7 @@ def nowEST():
         return nowEST.datetime
 
     # Convert UTC to EST datetime
-    timezone = pytz.timezone('America/New_York')
+    timezone = pytz.timezone('US/Eastern')
     utc_datetime = datetime.datetime.utcnow()
     est_datetime = utc_datetime + timezone.utcoffset(utc_datetime)
     log("UTC datetime: %s" % utc_datetime)
@@ -78,11 +79,9 @@ def toLocalTimezone(date):
         return date
 
     # Pick the first timezone name found
-    local_timezone = tzlocal()
-
+    local_timezone = tz.tzlocal()
     # Get the NBA league pass timezone (EST)
-    est_timezone = pytz.timezone('America/New_York')
-
+    est_timezone = pytz.timezone('US/Eastern')
     # Localize the date to include the offset, then convert to local timezone
     return est_timezone.localize(date).astimezone(local_timezone)
 

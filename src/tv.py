@@ -8,13 +8,14 @@ import urllib
 import urllib2
 from xml.dom.minidom import parseString
 
+import pytz
+
 import xbmc
 import xbmcaddon
 import xbmcplugin
 
 import common
 from shareddata import SharedData
-import pytz
 import utils
 import vars
 
@@ -71,7 +72,7 @@ class TV:
                 'what': 'nba_tv_live',
             })
 
-            item = common.getPlayableItem(video_url)
+            item = common.get_playable_item(video_url)
             if item is not None:
                 xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
@@ -90,7 +91,7 @@ class TV:
                 },
             })
 
-            item = common.getPlayableItem(video_url)
+            item = common.get_playable_item(video_url)
             if item is not None:
                 xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 

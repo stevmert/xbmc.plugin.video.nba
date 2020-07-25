@@ -3,4 +3,7 @@ pylint<2.0.0
 autopep8
 setuptools
 Kodistubs
-git+git://github.com/emilsvennesson/script.module.inputstreamhelper.git@v0.4.3#egg=inputstreamhelper
+python-dateutil==2.8.1
+pytz==2014.2
+Pillow==1.1
+git+git://github.com/emilsvennesson/script.module.inputstreamhelper.git@master#egg=inputstreamhelper
