@@ -20,7 +20,7 @@ MIME_TYPE = 'application/dash+xml'
 LICENSE_URL = 'https://shield-twoproxy.imggaming.com/proxy'
 
 
-def get_playable_item(video):
+def play(video):
     item = None
     if 'url' in video:
         item = xbmcgui.ListItem(path=video['url'])
@@ -35,7 +35,9 @@ def get_playable_item(video):
                 item.setProperty('inputstream.adaptive.license_type', DRM)
                 license_key = '%s|authorization=bearer %s|R{SSM}|' % (LICENSE_URL, video['drm'])
                 item.setProperty('inputstream.adaptive.license_key', license_key)
-    return item
+
+    if item is not None:
+        xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
 def updateFavTeam():
     vars.fav_team_abbrs = None

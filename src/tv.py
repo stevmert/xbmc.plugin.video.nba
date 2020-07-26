@@ -71,10 +71,7 @@ class TV:
             shared_data.set('playing', {
                 'what': 'nba_tv_live',
             })
-
-            item = common.get_playable_item(video_url)
-            if item is not None:
-                xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
+            common.play(video_url)
 
     @staticmethod
     def play_episode():
@@ -90,10 +87,7 @@ class TV:
                     'duration': duration,
                 },
             })
-
-            item = common.get_playable_item(video_url)
-            if item is not None:
-                xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
+            common.play(video_url)
 
     @staticmethod
     def get_episode_url(start_timestamp, duration, force_login=False):

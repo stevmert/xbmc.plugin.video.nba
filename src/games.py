@@ -306,9 +306,7 @@ def playGame():
     # Get the video url.
     # Authentication is needed over this point!
     currentvideo = getGameUrl(currentvideo_id, currentvideo_type, currentvideo_ishomefeed, start_time, duration)
-    item = common.get_playable_item(currentvideo)
-    if item is not None:
-        xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
+    common.play(currentvideo)
 
 def chooseGameVideoMenu():
     video_id = vars.params.get("video_id")
