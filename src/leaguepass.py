@@ -76,7 +76,7 @@ if mode is None:
 elif mode == "archive":
     archiveMenu()
 elif mode == "playgame":
-    playGame()
+    play_game()
 elif mode == "gamechoosevideo":
     chooseGameVideoMenu()
 elif mode == "oldseason":

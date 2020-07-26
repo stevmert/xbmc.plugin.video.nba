@@ -9,7 +9,7 @@ import common, utils
 import vars
 
 
-def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
+def get_game(video_id, video_type, video_ishomefeed, start_time, duration):
     utils.log("cookies: %s %s" % (video_type, vars.cookies), xbmc.LOGDEBUG)
 
     # video_type could be archive, live, condensed or oldseason
@@ -43,7 +43,7 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
         line2 = "Go LIVE"
         ret = xbmcgui.Dialog().select("Game Options", [line1, line2])
         if ret == -1:
-            return
+            return None
         elif ret == 0:
             if start_time:
                 body['st'] = str(start_time)
@@ -79,7 +79,7 @@ def getGameUrl(video_id, video_type, video_ishomefeed, start_time, duration):
     except urllib2.HTTPError as err:
         utils.logHttpException(err, url)
         utils.littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50020))
-        return ''
+        return None
 
     xml = parseString(str(content))
     url = xml.getElementsByTagName("path")[0].childNodes[0].nodeValue
@@ -289,7 +289,7 @@ def addGamesLinks(date='', video_type="archive"):
         utils.log(traceback.format_exc(), xbmc.LOGDEBUG)
         pass
 
-def playGame():
+def play_game():
     # Authenticate
     if vars.cookies == '':
         vars.cookies = common.login()
@@ -303,10 +303,10 @@ def playGame():
     currentvideo_ishomefeed = vars.params.get("video_ishomefeed", "1")
     currentvideo_ishomefeed = currentvideo_ishomefeed == "1"
 
-    # Get the video url.
     # Authentication is needed over this point!
-    currentvideo = getGameUrl(currentvideo_id, currentvideo_type, currentvideo_ishomefeed, start_time, duration)
-    common.play(currentvideo)
+    game = get_game(currentvideo_id, currentvideo_type, currentvideo_ishomefeed, start_time, duration)
+    if game is not None:
+        common.play(game)
 
 def chooseGameVideoMenu():
     video_id = vars.params.get("video_id")
