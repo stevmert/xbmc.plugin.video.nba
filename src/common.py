@@ -27,6 +27,8 @@ def get_playable_item(video):
             from inputstreamhelper import Helper
             is_helper = Helper(PROTOCOL, drm=DRM)
             if is_helper.check_inputstream():
+                item.setMimeType('application/xml+dash')
+                item.setContentLookup(False)
                 item.setProperty('inputstreamaddon', is_helper.inputstream_addon)
                 item.setProperty('inputstream.adaptive.manifest_type', PROTOCOL)
                 item.setProperty('inputstream.adaptive.license_type', DRM)
