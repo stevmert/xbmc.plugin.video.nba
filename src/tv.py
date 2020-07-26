@@ -65,20 +65,20 @@ class TV:
 
     @staticmethod
     def play_live():
-        video = TV.get_live()
-        if video is not None:
+        live = TV.get_live()
+        if live is not None:
             shared_data = SharedData()
             shared_data.set('playing', {
                 'what': 'nba_tv_live',
             })
-            common.play(video)
+            common.play(live)
 
     @staticmethod
     def play_episode():
         start_timestamp = vars.params.get('start_timestamp')
         duration = vars.params.get('duration')
-        video = TV.get_episode(start_timestamp, duration)
-        if video is not None:
+        episode = TV.get_episode(start_timestamp, duration)
+        if episode is not None:
             shared_data = SharedData()
             shared_data.set('playing', {
                 'what': 'nba_tv_episode',
@@ -87,7 +87,7 @@ class TV:
                     'duration': duration,
                 },
             })
-            common.play(video)
+            common.play(episode)
 
     @staticmethod
     def get_episode(start_timestamp, duration, force_login=False):
