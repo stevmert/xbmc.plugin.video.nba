@@ -14,8 +14,8 @@ import vars
 from utils import *
 
 
-PROTOCOL = 'mpd'
-DRM = 'com.widevine.alpha'
+PROTOCOL = 'mpd'  # TODO Handle other INPUTSTREAM_PROTOCOLS
+DRM = 'com.widevine.alpha'  # TODO Handle other DRM_SCHEMES
 LICENSE_URL = 'https://shield-twoproxy.imggaming.com/proxy'
 
 
@@ -29,7 +29,7 @@ def get_playable_item(video):
             if is_helper.check_inputstream():
                 item.setMimeType('application/xml+dash')
                 item.setContentLookup(False)
-                item.setProperty('inputstreamaddon', is_helper.inputstream_addon)
+                item.setProperty('inputstreamaddon', is_helper.inputstream_addon)  # TODO Kodi version dep
                 item.setProperty('inputstream.adaptive.manifest_type', PROTOCOL)
                 item.setProperty('inputstream.adaptive.license_type', DRM)
                 license_key = '%s|authorization=bearer %s|R{SSM}|' % (LICENSE_URL, video['drm'])
