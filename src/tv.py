@@ -65,7 +65,7 @@ class TV:
 
     @staticmethod
     def play_live():
-        video_url = TV.get_live_url()
+        video_url = TV.get_live()
         if video_url is not None:
             shared_data = SharedData()
             shared_data.set('playing', {
@@ -77,7 +77,7 @@ class TV:
     def play_episode():
         start_timestamp = vars.params.get('start_timestamp')
         duration = vars.params.get('duration')
-        video_url = TV.get_episode_url(start_timestamp, duration)
+        video_url = TV.get_episode(start_timestamp, duration)
         if video_url is not None:
             shared_data = SharedData()
             shared_data.set('playing', {
@@ -90,7 +90,7 @@ class TV:
             common.play(video_url)
 
     @staticmethod
-    def get_episode_url(start_timestamp, duration, force_login=False):
+    def get_episode(start_timestamp, duration, force_login=False):
         if not vars.cookies or force_login:
             common.login()
         if not vars.cookies:
@@ -134,7 +134,7 @@ class TV:
         return {'url': url, 'drm': drm}
 
     @staticmethod
-    def get_live_url(force_login=False):
+    def get_live(force_login=False):
         if not vars.cookies or force_login:
             common.login()
         if not vars.cookies:
