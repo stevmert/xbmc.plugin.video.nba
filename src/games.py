@@ -31,7 +31,7 @@ def get_game(video_id, video_type, video_ishomefeed, start_time, duration):
         'type': 'game',
         'extid': str(video_id),
         'drmtoken': True,
-        'deviceid': xbmc.getInfoLabel('Network.MacAddress'),
+        'deviceid': xbmc.getInfoLabel('Network.MacAddress'),  # TODO
         'gt': gt,
         'gs': vars.params.get('game_state', 3),
         'pcid': vars.player_id,

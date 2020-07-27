@@ -106,7 +106,7 @@ class TV:
             'type': 'channel',
             'id': 1,
             'drmtoken': True,
-            'deviceid': xbmc.getInfoLabel('Network.MacAddress'),
+            'deviceid': xbmc.getInfoLabel('Network.MacAddress'),  # TODO
             'st': start_timestamp,
             'dur': duration,
             'pcid': vars.player_id,
@@ -150,7 +150,7 @@ class TV:
             'type': 'channel',
             'id': 1,
             'drmtoken': True,
-            'deviceid': xbmc.getInfoLabel('Network.MacAddress'),
+            'deviceid': xbmc.getInfoLabel('Network.MacAddress'),  # TODO
             'pcid': vars.player_id,
             'format': 'xml',
         }
