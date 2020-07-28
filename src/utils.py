@@ -172,7 +172,7 @@ def prepareSingleThumbnail(im, width, height):
     return im
 
 def generateCombinedThumbnail(v, h, width=2*500, height=500, padding=10):
-    thumbnails_path = os.path.join(xbmc.translatePath(xbmcaddon.Addon().getAddonInfo('profile')).decode("utf-8"), "thumbnails")
+    thumbnails_path = os.path.join(xbmc.translatePath(xbmcaddon.Addon().getAddonInfo('profile')).decode('utf-8'), "thumbnails")
     if not xbmcvfs.exists(thumbnails_path):
         xbmcvfs.mkdir(thumbnails_path)
     combined_thumbnail_fullname = os.path.join(thumbnails_path, ("%s-%s.png" % (v.lower(), h.lower())))

@@ -12,7 +12,7 @@ class SharedData:
     __DEFAULT_JSON_CONTENT = {}
 
     def __init__(self):
-        self.__folder = xbmc.translatePath(xbmcaddon.Addon().getAddonInfo('profile')).decode("utf-8")
+        self.__folder = xbmc.translatePath(xbmcaddon.Addon().getAddonInfo('profile')).decode('utf-8')
         if not xbmcvfs.exists(self.__folder):
             xbmcvfs.mkdir(self.__folder)
         self.__file_path = self.__folder + "shared_data.json"
