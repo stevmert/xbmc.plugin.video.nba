@@ -9,28 +9,30 @@ import xbmcvfs
 
 class SharedData:
 
-    DEFAULT_FILE_CONTENT = "{}"  # TODO
+    __DEFAULT_JSON_CONTENT = {}  # TODO
 
     def __init__(self):
         self.folder = xbmc.translatePath(xbmcaddon.Addon().getAddonInfo('profile')).decode("utf-8")
         if not xbmcvfs.exists(self.folder):
             xbmcvfs.mkdir(self.folder)
         self.file_path = self.folder + "shared_data.json"
+
+        file_content = json.dumps(self.__DEFAULT_JSON_CONTENT)
         with open(self.file_path, 'w') as file_obj:
-            file_obj.write(self.DEFAULT_FILE_CONTENT)
+            file_obj.write(file_content)
 
-    def __getFileContent(self):  # TODO
+    def __get_json_content(self):  # TODO
         try:
-            with open(self.file_path) as file_obj:
+            with open(self.file_path, 'r') as file_obj:
                 file_content = file_obj.read()
+            json_content = json.loads(file_content)
         except:  # TODO
-            file_content = self.DEFAULT_FILE_CONTENT
+            json_content = self.__DEFAULT_JSON_CONTENT
 
-        json_content = json.loads(file_content)
         return json_content
 
     def set(self, path, value):
-        json_content = self.__getFileContent()
+        json_content = self.__get_json_content()
 
         # Simple "json-path"-like set algorithm #  TODO
         keys = path.split('.')
@@ -52,7 +54,7 @@ class SharedData:
             file_obj.write(file_content)
 
     def get(self, path):
-        json_content = self.__getFileContent()
+        json_content = self.__get_json_content()
 
         # Simple "json-path"-like get algorithm #  TODO
         keys = path.split('.')
