@@ -17,11 +17,14 @@ class SharedData:
             xbmcvfs.mkdir(self.folder)
         self.file_path = self.folder + "shared_data.json"
 
-        file_content = json.dumps(self.__DEFAULT_JSON_CONTENT)
+        self.__save_json_content(self.__DEFAULT_JSON_CONTENT)
+
+    def __save_json_content(self, json_content):  # TODO
+        file_content = json.dumps(json_content)
         with open(self.file_path, 'w') as file_obj:
             file_obj.write(file_content)
 
-    def __get_json_content(self):  # TODO
+    def __load_json_content(self):  # TODO
         try:
             with open(self.file_path, 'r') as file_obj:
                 file_content = file_obj.read()
@@ -32,7 +35,7 @@ class SharedData:
         return json_content
 
     def set(self, path, value):
-        json_content = self.__get_json_content()
+        json_content = self.__load_json_content()
 
         # Simple "json-path"-like set algorithm #  TODO
         keys = path.split('.')
@@ -49,12 +52,10 @@ class SharedData:
             else:
                 item[key] = value
 
-        file_content = json.dumps(json_content)
-        with open(self.file_path, 'w') as file_obj:
-            file_obj.write(file_content)
+        self.__save_json_content(json_content)
 
     def get(self, path):
-        json_content = self.__get_json_content()
+        json_content = self.__load_json_content()
 
         # Simple "json-path"-like get algorithm #  TODO
         keys = path.split('.')
