@@ -14,12 +14,13 @@ import vars
 from utils import *
 
 
-PROTOCOL = 'mpd'
-DRM = 'com.widevine.alpha'
+PROTOCOL = 'mpd'  # TODO Handle other INPUTSTREAM_PROTOCOLS
+DRM = 'com.widevine.alpha'  # TODO Handle other DRM_SCHEMES
+MIME_TYPE = 'application/dash+xml'
 LICENSE_URL = 'https://shield-twoproxy.imggaming.com/proxy'
 
 
-def get_playable_item(video):
+def play(video):
     item = None
     if 'url' in video:
         item = xbmcgui.ListItem(path=video['url'])
@@ -27,12 +28,17 @@ def get_playable_item(video):
             from inputstreamhelper import Helper
             is_helper = Helper(PROTOCOL, drm=DRM)
             if is_helper.check_inputstream():
-                item.setProperty('inputstreamaddon', is_helper.inputstream_addon)
+                item.setMimeType(MIME_TYPE)
+                item.setContentLookup(False)
+                item.setProperty('inputstreamaddon', is_helper.inputstream_addon)  # TODO Kodi version dep
                 item.setProperty('inputstream.adaptive.manifest_type', PROTOCOL)
                 item.setProperty('inputstream.adaptive.license_type', DRM)
+                item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')
                 license_key = '%s|authorization=bearer %s|R{SSM}|' % (LICENSE_URL, video['drm'])
                 item.setProperty('inputstream.adaptive.license_key', license_key)
-    return item
+
+    if item is not None:
+        xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
 
 def updateFavTeam():
     vars.fav_team_abbrs = None
@@ -73,7 +79,7 @@ def get_date(default='', heading='Please enter date (YYYY/MM/DD)', hidden=False)
     keyboard.doModal()
     ret = datetime.date.today()
     if keyboard.isConfirmed():
-        sDate = unicode(keyboard.getText(), "utf-8")
+        sDate = unicode(keyboard.getText(), 'utf-8')
         temp = sDate.split("/")
         ret = datetime.date(int(temp[0]), int(temp[1]), int(temp[2]))
     return ret

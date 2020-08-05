@@ -65,23 +65,20 @@ class TV:
 
     @staticmethod
     def play_live():
-        video_url = TV.get_live_url()
-        if video_url is not None:
+        live = TV.get_live()
+        if live is not None:
             shared_data = SharedData()
             shared_data.set('playing', {
                 'what': 'nba_tv_live',
             })
-
-            item = common.get_playable_item(video_url)
-            if item is not None:
-                xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
+            common.play(live)
 
     @staticmethod
     def play_episode():
         start_timestamp = vars.params.get('start_timestamp')
         duration = vars.params.get('duration')
-        video_url = TV.get_episode_url(start_timestamp, duration)
-        if video_url is not None:
+        episode = TV.get_episode(start_timestamp, duration)
+        if episode is not None:
             shared_data = SharedData()
             shared_data.set('playing', {
                 'what': 'nba_tv_episode',
@@ -90,13 +87,10 @@ class TV:
                     'duration': duration,
                 },
             })
-
-            item = common.get_playable_item(video_url)
-            if item is not None:
-                xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
+            common.play(episode)
 
     @staticmethod
-    def get_episode_url(start_timestamp, duration, force_login=False):
+    def get_episode(start_timestamp, duration, force_login=False):
         if not vars.cookies or force_login:
             common.login()
         if not vars.cookies:
@@ -112,7 +106,7 @@ class TV:
             'type': 'channel',
             'id': 1,
             'drmtoken': True,
-            'deviceid': xbmc.getInfoLabel('Network.MacAddress'),
+            'deviceid': xbmc.getInfoLabel('Network.MacAddress'),  # TODO
             'st': start_timestamp,
             'dur': duration,
             'pcid': vars.player_id,
@@ -140,7 +134,7 @@ class TV:
         return {'url': url, 'drm': drm}
 
     @staticmethod
-    def get_live_url(force_login=False):
+    def get_live(force_login=False):
         if not vars.cookies or force_login:
             common.login()
         if not vars.cookies:
@@ -156,7 +150,7 @@ class TV:
             'type': 'channel',
             'id': 1,
             'drmtoken': True,
-            'deviceid': xbmc.getInfoLabel('Network.MacAddress'),
+            'deviceid': xbmc.getInfoLabel('Network.MacAddress'),  # TODO
             'pcid': vars.player_id,
             'format': 'xml',
         }
