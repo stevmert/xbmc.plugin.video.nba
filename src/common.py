@@ -33,6 +33,7 @@ def play(video):
                 item.setProperty('inputstreamaddon', is_helper.inputstream_addon)  # TODO Kodi version dep
                 item.setProperty('inputstream.adaptive.manifest_type', PROTOCOL)
                 item.setProperty('inputstream.adaptive.license_type', DRM)
+                item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')
                 license_key = '%s|authorization=bearer %s|R{SSM}|' % (LICENSE_URL, video['drm'])
                 item.setProperty('inputstream.adaptive.license_key', license_key)
 
