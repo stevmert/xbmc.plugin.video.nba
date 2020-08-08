@@ -167,12 +167,20 @@ def addGamesLinks(date='', video_type="archive"):
             utils.log("daily games for day %d are %s" % (index, daily_games), xbmc.LOGDEBUG)
 
             for game in daily_games:
-                h = game.get('h', '')
-                v = game.get('v', '')
+                v = game.get('v')
+                h = game.get('h')
+                vr = game.get('vr')
+                hr = game.get('hr')
+                vs = game.get('vs')
+                hs = game.get('hs')
+
+                if v is None or h is None:  # TODO
+                    utils.log(json.dumps(game), xbmc.LOGDEBUG)
+                    continue
+
                 game_id = game.get('id', '')
                 game_start_date_est = game.get('d', '')
-                vs = game.get('vs', '')
-                hs = game.get('hs', '')
+
                 name = game.get('name', '')
                 image = game.get('image', '')
                 seo_name = game.get("seoName", "")
