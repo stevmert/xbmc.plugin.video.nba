@@ -84,7 +84,7 @@ def get_date(default='', heading='Please enter date (YYYY/MM/DD)', hidden=False)
         ret = datetime.date(int(temp[0]), int(temp[1]), int(temp[2]))
     return ret
 
-def login():
+def authenticate():
     username = vars.settings.getSetting(id="username")
     password = vars.settings.getSetting(id="password")
 

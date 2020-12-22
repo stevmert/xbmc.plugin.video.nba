@@ -92,7 +92,7 @@ class TV:
     @staticmethod
     def get_episode(start_timestamp, duration, force_login=False):
         if not vars.cookies or force_login:
-            common.login()
+            common.authenticate()
         if not vars.cookies:
             return None
 
@@ -136,7 +136,7 @@ class TV:
     @staticmethod
     def get_live(force_login=False):
         if not vars.cookies or force_login:
-            common.login()
+            common.authenticate()
         if not vars.cookies:
             return None
 

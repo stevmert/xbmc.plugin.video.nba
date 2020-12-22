@@ -304,7 +304,7 @@ def addGamesLinks(date='', video_type="archive"):
 def play_game():
     # Authenticate
     if vars.cookies == '':
-        vars.cookies = common.login()
+        vars.cookies = common.authenticate()
     if not vars.cookies:
         return
 
