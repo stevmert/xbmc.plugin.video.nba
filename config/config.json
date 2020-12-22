@@ -1,5 +1,5 @@
 {
-	"publish_endpoint": "https://watch.nba.com/service/publishpoint",
+	"publish_endpoint": "https://nbaapi.neulion.com/api_nba/v1/publishpoint",
 	"game_data_endpoint": "http://watch.nba.com/game/%s?format=json",
 	"config_endpoint": "https://watch.nba.com/service/config?format=json&cameras=true",
 
