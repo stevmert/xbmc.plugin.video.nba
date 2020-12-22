@@ -171,7 +171,7 @@ def addGamesLinks(date='', video_type="archive"):
             utils.log("daily games for day %d are %s" % (index, daily_games), xbmc.LOGDEBUG)
 
             for game in daily_games:
-                processed_keys = {}
+                processed_keys = set()
 
                 v = process_key(game, 'v', processed_keys)
                 h = process_key(game, 'h', processed_keys)
