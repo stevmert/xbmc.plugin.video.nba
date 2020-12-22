@@ -2,7 +2,7 @@
 <settings>
 	<!-- General -->
 	<category label="50000">
-		<setting id="username" type="text" label="50001" default="" />
+		<setting id="email" type="text" label="50001" default="" />
 		<setting id="password" type="text" label="50002" option="hidden" default="" />
 		<setting type="sep" />
 		<setting id="scores" type="bool" label="50004" default="false" />

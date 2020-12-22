@@ -85,17 +85,17 @@ def get_date(default='', heading='Please enter date (YYYY/MM/DD)', hidden=False)
     return ret
 
 def authenticate():
-    username = vars.settings.getSetting(id="username")
+    email = vars.settings.getSetting(id="email")
     password = vars.settings.getSetting(id="password")
 
-    if not username or not password:
+    if not email or not password:
         littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50024))
         return ''
 
     try:
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         body = urllib.urlencode({
-            'username': username,
+            'email': email,
             'password': password
         })
 

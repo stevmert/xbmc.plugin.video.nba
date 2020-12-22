@@ -57,7 +57,7 @@ msgid "Failed to get a video URL. Are you logged in?"
 msgstr "נכשל בהשגת כתובת URL לוידאו. האם אתה מחובר?"
 
 msgctxt "#50021"
-msgid "Cannot login: invalid username and password, or your account is locked."
+msgid "Cannot login: invalid e-mail and password, or your account is locked."
 msgstr "לא מצליח להתחבר: חסר שם משתמש, סיסמה, או שהחשבון שלך ננעל."
 
 msgctxt "#50022"
