@@ -93,27 +93,43 @@ def authenticate():
         return None
 
     try:
-        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-        body = urllib.urlencode({
+        headers = {
+            'Content-Type': 'application/json',
+            'X-Client-Platform': 'web',
+        }
+        body = json.dumps({
             'email': email,
-            'password': password
+            'password': password,
+            'rememberMe': True,
         })
 
-        request = urllib2.Request(vars.config['login_endpoint'], body, headers)
+        request = urllib2.Request('https://identity.nba.com/api/v1/auth', body, headers)
         response = urllib2.urlopen(request)
         content = response.read()
-    except urllib2.HTTPError as e:
-        log("Login failed with code: %d and content: %s" % (e.getcode(), e.read()))
-        littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50022))
+        content_json = json.loads(content)
+        cookies = response.info()['Set-Cookie'].partition(';')[0]
+    except urllib2.HTTPError as err:
+        littleErrorPopup(err)
         return None
 
-    # Check the response xml
-    xml = parseString(str(content))
-    if xml.getElementsByTagName("code")[0].firstChild.nodeValue == "loginlocked":
-        littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50021))
-        return None
-    else:
-        # logged in
-        vars.cookies = response.info().getheader('Set-Cookie').partition(';')[0]
+    try:
+        headers = {
+            'Cookie': cookies,
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
+        }
+        body = {
+            'format': 'json',
+            'accesstoken': 'true',
+            'ciamlogin': 'true',
+        }
+        body = urllib.urlencode(body)
 
-    return vars.cookies
+        request = urllib2.Request('https://watch.nba.com/secure/authenticate', body, headers)
+        response = urllib2.urlopen(request)
+        content = response.read()
+        content_json = json.loads(content)
+        access_token = content_json['data']['accessToken']
+        return access_token
+    except urllib2.HTTPError as err:
+        littleErrorPopup(err)
+        return None
