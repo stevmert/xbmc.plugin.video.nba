@@ -90,7 +90,7 @@ def authenticate():
 
     if not email or not password:
         littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50024))
-        return ''
+        return None
 
     try:
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -105,13 +105,13 @@ def authenticate():
     except urllib2.HTTPError as e:
         log("Login failed with code: %d and content: %s" % (e.getcode(), e.read()))
         littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50022))
-        return ''
+        return None
 
     # Check the response xml
     xml = parseString(str(content))
     if xml.getElementsByTagName("code")[0].firstChild.nodeValue == "loginlocked":
         littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50021))
-        return ''
+        return None
     else:
         # logged in
         vars.cookies = response.info().getheader('Set-Cookie').partition(';')[0]

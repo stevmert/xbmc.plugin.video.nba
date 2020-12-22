@@ -91,9 +91,8 @@ class TV:
 
     @staticmethod
     def get_episode(start_timestamp, duration):
-        if not vars.cookies or True:
-            common.authenticate()
-        if not vars.cookies:
+        vars.cookies = common.authenticate()
+        if vars.cookies is None:
             return None
 
         url = vars.config['publish_endpoint']
@@ -135,9 +134,8 @@ class TV:
 
     @staticmethod
     def get_live():
-        if not vars.cookies or True:
-            common.authenticate()
-        if not vars.cookies:
+        vars.cookies = common.authenticate()
+        if vars.cookies is None:
             return None
 
         url = vars.config['publish_endpoint']
