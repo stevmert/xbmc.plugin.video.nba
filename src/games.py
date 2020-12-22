@@ -302,8 +302,7 @@ def addGamesLinks(date='', video_type="archive"):
         pass
 
 def play_game():
-    vars.cookies = common.authenticate()
-    if vars.cookies is None:
+    if not common.authenticate():
         return
 
     currentvideo_id = vars.params.get("video_id")
