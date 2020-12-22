@@ -25,7 +25,9 @@ useragent = "iTunes-AppleTV/4.1"
 cache = StorageServer.StorageServer("nbaleaguepass", 1)
 cache.table_name = "nbaleaguepass"
 
-cookies = ''
+cookies = None
+access_token = None
+
 player_id = binascii.b2a_hex(os.urandom(16))
 addon_dir = xbmc.translatePath(settings.getAddonInfo('path')).decode('utf-8')
 
