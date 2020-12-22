@@ -31,6 +31,7 @@ def get_game(video_id, video_type, video_ishomefeed, start_time, duration):
         'type': 'game',
         'extid': str(video_id),
         'drmtoken': True,
+        'token': vars.access_token,
         'deviceid': xbmc.getInfoLabel('Network.MacAddress'),  # TODO
         'gt': gt,
         'gs': vars.params.get('game_state', 3),
@@ -151,6 +152,10 @@ def getHighlightGameUrl(video_id):
     utils.log("highlight video url: %s" % url, xbmc.LOGDEBUG)
     return url
 
+def process_key(dictionary, key, processed_keys):
+    processed_keys.add(key)
+    return dictionary.get(key)
+
 def addGamesLinks(date='', video_type="archive"):
     try:
         now_datetime_est = utils.nowEST()
@@ -167,20 +172,30 @@ def addGamesLinks(date='', video_type="archive"):
             utils.log("daily games for day %d are %s" % (index, daily_games), xbmc.LOGDEBUG)
 
             for game in daily_games:
-                h = game.get('h', '')
-                v = game.get('v', '')
-                game_id = game.get('id', '')
-                game_start_date_est = game.get('d', '')
-                vs = game.get('vs', '')
-                hs = game.get('hs', '')
-                name = game.get('name', '')
-                image = game.get('image', '')
-                seo_name = game.get("seoName", "")
-                has_condensed_video = game.get("video", {}).get("c", False)
+                processed_keys = set()
 
-                has_away_feed = False
-                video_details = game.get('video', {})
-                has_away_feed = bool(video_details.get("af", {}))
+                v = process_key(game, 'v', processed_keys)
+                h = process_key(game, 'h', processed_keys)
+                vr = process_key(game, 'vr', processed_keys)
+                hr = process_key(game, 'hr', processed_keys)
+                vs = process_key(game, 'vs', processed_keys)
+                hs = process_key(game, 'hs', processed_keys)
+
+                if v is None or h is None:  # TODO
+                    utils.log(json.dumps(game), xbmc.LOGDEBUG)
+                    continue
+
+                game_id = process_key(game, 'id', processed_keys)
+                game_start_date_est = process_key(game, 'd', processed_keys)
+
+                name = process_key(game, 'name', processed_keys)
+                image = process_key(game, 'image', processed_keys)
+                seo_name = process_key(game, 'seoName', processed_keys)
+
+                video = process_key(game, 'video', processed_keys)
+                has_video = video is not None
+                has_condensed_video = has_video and bool(video.get('c'))
+                has_away_feed = has_video and bool(video.get('af'))
 
                 # Try to convert start date to datetime
                 try:
@@ -207,36 +222,31 @@ def addGamesLinks(date='', video_type="archive"):
                     playoff_status = "%d-%d" % (playoff_visitor_wins, playoff_home_wins)
                     playoff_game_number = playoff_home_wins + playoff_visitor_wins
 
-                if game_id != '':
+                if game_id is not None:
                     # Get pretty names for the team names
                     [visitor_name, host_name] = [vars.config['teams'].get(t.lower(), t) for t in [v, h]]
                     [unknown_teams.setdefault(t, []).append(game_start_datetime_est.strftime("%Y-%m-%d"))
                         for t in [v, h] if t.lower() not in vars.config['teams']]
 
-                    has_video = "video" in game
                     future_video = game_start_datetime_est > now_datetime_est and \
                         game_start_datetime_est.date() == now_datetime_est.date()
                     live_video = game_start_datetime_est < now_datetime_est < game_end_datetime_est
 
-                    # Create the title
-                    if host_name and visitor_name:
-                        name = game_start_datetime_est.strftime("%Y-%m-%d")
-                        if video_type == "live":
-                            name = utils.toLocalTimezone(game_start_datetime_est).strftime("%Y-%m-%d (at %I:%M %p)")
+                    name = game_start_datetime_est.strftime("%Y-%m-%d")
+                    if video_type == "live":
+                        name = utils.toLocalTimezone(game_start_datetime_est).strftime("%Y-%m-%d (at %I:%M %p)")
 
-                        # Add the teams' names and the scores if needed
-                        name += ' %s vs %s' % (visitor_name, host_name)
-                        if playoff_game_number != 0:
-                            name += ' (game %d)' % (playoff_game_number)
-                        if vars.show_scores and not future_video:
-                            name += ' %s:%s' % (str(vs), str(hs))
+                    name += " %s (%s) vs %s (%s)" % (visitor_name, vr, host_name, hr)
 
-                            if playoff_status:
-                                name += " (series: %s)" % playoff_status
+                    if playoff_game_number != 0:
+                        name += ' (game %d)' % (playoff_game_number)
+                    if vars.show_scores and not future_video:
+                        name += ' %s:%s' % (vs, hs)
 
-                        thumbnail_url = utils.generateCombinedThumbnail(v, h)
-                    elif image:
-                        thumbnail_url = "https://nbadsdmt.akamaized.net/media/nba/nba/thumbs/%s" % image
+                        if playoff_status:
+                            name += " (series: %s)" % playoff_status
+
+                    thumbnail_url = utils.generateCombinedThumbnail(v, h)
 
                     if video_type == "live":
                         if future_video:
@@ -253,7 +263,7 @@ def addGamesLinks(date='', video_type="archive"):
                         add_link = False
 
 
-                    if add_link == True:
+                    if add_link:
                         params = {
                             'video_id': game_id,
                             'video_type': video_type,
@@ -281,6 +291,9 @@ def addGamesLinks(date='', video_type="archive"):
                         # Add a directory item that contains home/away/condensed items
                         common.addListItem(name, url="", mode="gamechoosevideo", iconimage=thumbnail_url, isfolder=True, customparams=params)
 
+                remaining_keys = set(game.keys()).difference(processed_keys)
+                utils.log('Remaining keys: {}'.format(remaining_keys), xbmc.LOGDEBUG)
+
         if unknown_teams:
             utils.log("Unknown teams: %s" % str(unknown_teams), xbmc.LOGWARNING)
 
@@ -290,10 +303,7 @@ def addGamesLinks(date='', video_type="archive"):
         pass
 
 def play_game():
-    # Authenticate
-    if vars.cookies == '':
-        vars.cookies = common.login()
-    if not vars.cookies:
+    if not common.authenticate():
         return
 
     currentvideo_id = vars.params.get("video_id")

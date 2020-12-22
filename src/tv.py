@@ -90,10 +90,8 @@ class TV:
             common.play(episode)
 
     @staticmethod
-    def get_episode(start_timestamp, duration, force_login=False):
-        if not vars.cookies or force_login:
-            common.login()
-        if not vars.cookies:
+    def get_episode(start_timestamp, duration):
+        if not common.authenticate():
             return None
 
         url = vars.config['publish_endpoint']
@@ -106,6 +104,7 @@ class TV:
             'type': 'channel',
             'id': 1,
             'drmtoken': True,
+            'token': vars.access_token,
             'deviceid': xbmc.getInfoLabel('Network.MacAddress'),  # TODO
             'st': start_timestamp,
             'dur': duration,
@@ -134,10 +133,8 @@ class TV:
         return {'url': url, 'drm': drm}
 
     @staticmethod
-    def get_live(force_login=False):
-        if not vars.cookies or force_login:
-            common.login()
-        if not vars.cookies:
+    def get_live():
+        if not common.authenticate():
             return None
 
         url = vars.config['publish_endpoint']
@@ -150,6 +147,7 @@ class TV:
             'type': 'channel',
             'id': 1,
             'drmtoken': True,
+            'token': vars.access_token,
             'deviceid': xbmc.getInfoLabel('Network.MacAddress'),  # TODO
             'pcid': vars.player_id,
             'format': 'xml',
