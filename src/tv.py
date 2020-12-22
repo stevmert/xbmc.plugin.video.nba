@@ -90,8 +90,8 @@ class TV:
             common.play(episode)
 
     @staticmethod
-    def get_episode(start_timestamp, duration, force_login=False):
-        if not vars.cookies or force_login:
+    def get_episode(start_timestamp, duration):
+        if not vars.cookies or True:
             common.authenticate()
         if not vars.cookies:
             return None
@@ -134,8 +134,8 @@ class TV:
         return {'url': url, 'drm': drm}
 
     @staticmethod
-    def get_live(force_login=False):
-        if not vars.cookies or force_login:
+    def get_live():
+        if not vars.cookies or True:
             common.authenticate()
         if not vars.cookies:
             return None

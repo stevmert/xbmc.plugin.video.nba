@@ -32,11 +32,11 @@ class PollingThread(BaseThread):
 
     def refreshLiveUrl(self):
         if self.shared_data.get('playing.what') == 'nba_tv_live':
-            video = TV.get_live(force_login=True)
+            video = TV.get_live()
         elif self.shared_data.get('playing.what') == 'nba_tv_episode':
             start_timestamp = self.shared_data.get('playing.data.start_timestamp')
             duration = self.shared_data.get('playing.data.duration')
-            video = TV.get_episode(start_timestamp, duration, force_login=True)
+            video = TV.get_episode(start_timestamp, duration)
 
         if video is not None:
             self.readExpiresFromUrl(video)
