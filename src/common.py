@@ -90,7 +90,7 @@ def authenticate():
 
     if not email or not password:
         littleErrorPopup(xbmcaddon.Addon().getLocalizedString(50024))
-        return None
+        return False
 
     try:
         headers = {
@@ -107,14 +107,14 @@ def authenticate():
         response = urllib2.urlopen(request)
         content = response.read()
         content_json = json.loads(content)
-        cookies = response.info()['Set-Cookie'].partition(';')[0]
+        vars.cookies = response.info()['Set-Cookie'].partition(';')[0]
     except urllib2.HTTPError as err:
         littleErrorPopup(err)
-        return None
+        return False
 
     try:
         headers = {
-            'Cookie': cookies,
+            'Cookie': vars.cookies,
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36',
         }
         body = {
@@ -128,8 +128,9 @@ def authenticate():
         response = urllib2.urlopen(request)
         content = response.read()
         content_json = json.loads(content)
-        access_token = content_json['data']['accessToken']
-        return access_token
+        vars.access_token = content_json['data']['accessToken']
     except urllib2.HTTPError as err:
         littleErrorPopup(err)
-        return None
+        return False
+
+    return True
