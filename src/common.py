@@ -14,7 +14,10 @@ import vars
 from utils import *
 
 
-PROTOCOL = 'mpd'  # TODO Handle other INPUTSTREAM_PROTOCOLS
+PROTOCOLS = [
+    {'protocol': 'mpd', 'extension': 'mpd', 'mimetype': 'application/dash+xml'},
+    {'protocol': 'hls', 'extension': 'm3u8', 'mimetype': 'vnd.apple.mpegURL'},
+]
 DRM = 'com.widevine.alpha'  # TODO Handle other DRM_SCHEMES
 MIME_TYPE = 'application/dash+xml'
 LICENSE_URL = 'https://shield-twoproxy.imggaming.com/proxy'
@@ -24,18 +27,20 @@ def play(video):
     item = None
     if 'url' in video:
         item = xbmcgui.ListItem(path=video['url'])
-        if '.%s' % PROTOCOL in video['url']:
-            from inputstreamhelper import Helper
-            is_helper = Helper(PROTOCOL, drm=DRM)
-            if is_helper.check_inputstream():
-                item.setMimeType(MIME_TYPE)
-                item.setContentLookup(False)
-                item.setProperty('inputstreamaddon', is_helper.inputstream_addon)  # TODO Kodi version dep
-                item.setProperty('inputstream.adaptive.manifest_type', PROTOCOL)
-                item.setProperty('inputstream.adaptive.license_type', DRM)
-                item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')
-                license_key = '%s|authorization=bearer %s|R{SSM}|' % (LICENSE_URL, video['drm'])
-                item.setProperty('inputstream.adaptive.license_key', license_key)
+        for protocol_info in PROTOCOLS:
+            if '.%s' % protocol_info['extension'] in video['url']:
+                from inputstreamhelper import Helper
+                is_helper = Helper(protocol_info['protocol'], drm=DRM)
+                if is_helper.check_inputstream():
+                    item.setMimeType(protocol_info['mimetype'])
+                    item.setContentLookup(False)
+                    # TODO Kodi version dep
+                    item.setProperty('inputstreamaddon', is_helper.inputstream_addon)
+                    item.setProperty('inputstream.adaptive.manifest_type', protocol_info['protocol'])
+                    item.setProperty('inputstream.adaptive.license_type', DRM)
+                    item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')
+                    license_key = '%s|authorization=bearer %s|R{SSM}|' % (LICENSE_URL, video['drm'])
+                    item.setProperty('inputstream.adaptive.license_key', license_key)
 
     if item is not None:
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=item)
