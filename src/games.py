@@ -236,7 +236,10 @@ def addGamesLinks(date='', video_type="archive"):
                     if video_type == "live":
                         name = utils.toLocalTimezone(game_start_datetime_est).strftime("%Y-%m-%d (at %I:%M %p)")
 
-                    name += " %s (%s) vs %s (%s)" % (visitor_name, vr, host_name, hr)
+                    if vars.show_scores:
+						name += " %s (%s) vs %s (%s)" % (visitor_name, vr, host_name, hr)
+					else:
+						name += " %s vs %s" % (visitor_name, host_name)
 
                     if playoff_game_number != 0:
                         name += ' (game %d)' % (playoff_game_number)
