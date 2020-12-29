@@ -6,6 +6,7 @@
 		<setting id="password" type="text" label="50002" option="hidden" default="" />
 		<setting type="sep" />
 		<setting id="records_and_scores" type="bool" label="50004" default="false" />
+		<setting id="alternative_archive_menu" type="bool" label="50012" default="false" />
 		<setting id="local_timezone" type="bool" label="50007" default="true" />
 		<setting id="fav_team" type="select" label="50009" values="None|Hawks|Celtics|Nets|Hornets|Bulls|Cavaliers|Mavericks|Nuggets|Pistons|Warriors|Rockets|Pacers|Clippers|Lakers|Grizzlies|Heat|Bucks|Timberwolves|Pelicans|Knicks|Thunder|Magic|76ers|Suns|Trail Blazers|Kings|Spurs|Raptors|Jazz|Wizards" default="None" />
 		<setting type="sep" />
