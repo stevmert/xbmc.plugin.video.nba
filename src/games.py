@@ -446,7 +446,7 @@ def chooseGameMenu(mode, video_type, date2Use=None):
                 if mode == "last2weeks":
                     date = date - timedelta(7)
                 if mode == "last3weeks":
-                    date = date - timedelta(14)
+                    date = date - timedelta(7)
 
                 addGamesLinks(date, video_type)
 
