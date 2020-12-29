@@ -24,8 +24,14 @@ def mainMenu():
     addListItem('Favorite team\'s games', '', 'favteam', '', isfolder=True)
 
 def archiveMenu():
-    addListItem('This week', 'archive', 'thisweek', '', isfolder=True)
-    addListItem('Last week', 'archive', 'lastweek', '', isfolder=True)
+    if vars.use_alternative_archive_menu:
+        addListItem('This week (last 1-7 days)', 'archive', 'thisweek', '', isfolder=True)
+        addListItem('Last 4-10 days', 'archive', 'last4-10days', '', isfolder=True)
+        addListItem('Last 2 weeks (last 8-14 days)', 'archive', 'last2weeks', '', isfolder=True)
+        addListItem('Last 3 weeks (last 15-21 days)', 'archive', 'last3weeks', '', isfolder=True)
+    else:
+        addListItem('This week', 'archive', 'thisweek', '', isfolder=True)
+        addListItem('Last week', 'archive', 'lastweek', '', isfolder=True)
     addListItem('Select date', 'archive', 'selectdate', '', isfolder=True)
 
     # Dynamic previous season, so I don't have to update this every time!
