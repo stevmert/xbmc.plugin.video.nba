@@ -427,12 +427,42 @@ def chooseGameMenu(mode, video_type, date2Use=None):
             utils.log("current date (america timezone) is %s" % str(date), xbmc.LOGDEBUG)
 
         # Starts on mondays
-        day = date.isoweekday()
+        day = date.isoweekday()#2 = tuesday
         date = date - timedelta(day-1)
-        if mode == "lastweek":
-            date = date - timedelta(7)
 
-        addGamesLinks(date, video_type)
+        if vars.use_alternative_archive_menu:
+            if mode == 'last4-10days':
+                if day <= 5:
+                    date = date - timedelta(7)
+                addGamesLinks(date, video_type)
+                if day <= 5 and day > 1:#no need to query empty list when day < 2
+                    date = date + timedelta(7)
+                    addGamesLinks(date, video_type)
+            else:
+                #to counter empty list on mondays for 'this week'
+                if day == 1:
+                    date = date - timedelta(7)
+
+                if mode == "last2weeks":
+                    date = date - timedelta(7)
+                if mode == "last3weeks":
+                    date = date - timedelta(14)
+
+                addGamesLinks(date, video_type)
+
+                if mode == "last2weeks":
+                    date = date + timedelta(7)
+                    addGamesLinks(date, video_type)
+                if mode == "last3weeks":
+                    date = date + timedelta(7)
+                    addGamesLinks(date, video_type)
+                    date = date + timedelta(7)
+                    addGamesLinks(date, video_type)
+        else:
+            if mode == "lastweek":
+                date = date - timedelta(7)
+
+            addGamesLinks(date, video_type)
 
         # Can't sort the games list correctly because XBMC treats file items and directory
         # items differently and puts directory first, then file items (home/away feeds
