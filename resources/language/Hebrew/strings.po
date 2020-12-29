@@ -29,7 +29,7 @@ msgid "Password"
 msgstr "סיסמה"
 
 msgctxt "#50004"
-msgid "Show scores"
+msgid "Show records and scores"
 msgstr "הצג ניקוד"
 
 msgctxt "#50005"
