@@ -15,7 +15,7 @@ __addon_id__ = "plugin.video.nba"
 
 # Global variables
 settings = xbmcaddon.Addon(id=__addon_id__)
-show_scores = json.loads(settings.getSetting(id="scores"))
+show_records_and_scores = json.loads(settings.getSetting(id="records_and_scores"))
 debug = json.loads(settings.getSetting(id="debug"))
 use_cached_thumbnails = json.loads(settings.getSetting(id="cached_thumbnails"))
 use_local_timezone = json.loads(settings.getSetting(id="local_timezone"))

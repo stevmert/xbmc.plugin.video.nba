@@ -74,7 +74,7 @@ def addFavTeamGameLinks(fromDate, favTeamAbbrs, video_type='archive'):
 
                     # Add the teams' names and the scores if needed
                     name += ' %s vs %s' % (visitor_name, host_name)
-                    if vars.show_scores and not future_video:
+                    if vars.show_records_and_scores and not future_video:
                         name += ' %s:%s' % (str(vs), str(hs))
 
                     thumbnail_url = generateCombinedThumbnail(v, h)

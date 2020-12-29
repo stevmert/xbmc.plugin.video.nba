@@ -26,7 +26,7 @@ msgid "Password"
 msgstr ""
 
 msgctxt "#50004"
-msgid "Show scores"
+msgid "Show records and scores"
 msgstr ""
 
 msgctxt "#50005"
