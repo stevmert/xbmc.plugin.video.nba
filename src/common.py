@@ -7,19 +7,17 @@ import urllib2
 import xbmc
 import xbmcaddon
 import xbmcgui
-import re
 from xml.dom.minidom import parseString
 
 import vars
 from utils import *
 
 
-PROTOCOLS = [
-    {'protocol': 'mpd', 'extension': 'mpd', 'mimetype': 'application/dash+xml'},
-    {'protocol': 'hls', 'extension': 'm3u8', 'mimetype': 'vnd.apple.mpegURL'},
-]
+PROTOCOLS = {
+    'mpd': {'extensions': ['mpd'], 'mimetype': 'application/dash+xml'},
+    'hls': {'extensions': ['m3u8', 'm3u'], 'mimetype': 'application/vnd.apple.mpegurl'},
+}
 DRM = 'com.widevine.alpha'  # TODO Handle other DRM_SCHEMES
-MIME_TYPE = 'application/dash+xml'
 LICENSE_URL = 'https://shield-twoproxy.imggaming.com/proxy'
 
 
@@ -27,16 +25,15 @@ def play(video):
     item = None
     if 'url' in video:
         item = xbmcgui.ListItem(path=video['url'])
-        for protocol_info in PROTOCOLS:
-            if '.%s' % protocol_info['extension'] in video['url']:
+        for protocol, protocol_info in PROTOCOLS.items():
+            if any(".%s" % extension in video['url'] for extension in protocol_info['extensions']):
                 from inputstreamhelper import Helper
-                is_helper = Helper(protocol_info['protocol'], drm=DRM)
+                is_helper = Helper(protocol, drm=DRM)
                 if is_helper.check_inputstream():
                     item.setMimeType(protocol_info['mimetype'])
                     item.setContentLookup(False)
-                    # TODO Kodi version dep
-                    item.setProperty('inputstreamaddon', is_helper.inputstream_addon)
-                    item.setProperty('inputstream.adaptive.manifest_type', protocol_info['protocol'])
+                    item.setProperty('inputstreamaddon', is_helper.inputstream_addon)  # TODO Kodi version dep
+                    item.setProperty('inputstream.adaptive.manifest_type', protocol)
                     item.setProperty('inputstream.adaptive.license_type', DRM)
                     item.setProperty('inputstream.adaptive.manifest_update_parameter', 'full')
                     license_key = '%s|authorization=bearer %s|R{SSM}|' % (LICENSE_URL, video['drm'])
