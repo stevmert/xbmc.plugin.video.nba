@@ -8,7 +8,6 @@ from xml.dom.minidom import parseString
 import common, utils
 import vars
 
-
 def get_game(video_id, video_type, video_ishomefeed, start_time, duration):
     utils.log("cookies: %s %s" % (video_type, vars.cookies), xbmc.LOGDEBUG)
 
@@ -156,7 +155,7 @@ def process_key(dictionary, key, processed_keys):
     processed_keys.add(key)
     return dictionary.get(key)
 
-def addGamesLinks(date='', video_type="archive"):
+def addGamesLinks(date='', video_type="archive", playlist=None):
     try:
         now_datetime_est = utils.nowEST()
         schedule = 'https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds_s2019/schedule/%04d/%d_%d.js?t=%d' % \
@@ -273,8 +272,9 @@ def addGamesLinks(date='', video_type="archive"):
                             'seo_name': seo_name,
                             'visitor_team': visitor_name,
                             'home_team': host_name,
-                            'has_away_feed': 1 if has_away_feed else 0,
-                            'has_condensed_game': 1 if has_condensed_video else 0,
+                            'has_away_feed': "1" if has_away_feed else "0",
+                            'has_condensed_game': "1" if has_condensed_video else "0",
+                            'foldername': name,
                         }
 
                         if 'st' in game:
@@ -292,7 +292,10 @@ def addGamesLinks(date='', video_type="archive"):
                                 params['duration'] = end_time - start_time
 
                         # Add a directory item that contains home/away/condensed items
-                        common.addListItem(name, url="", mode="gamechoosevideo", iconimage=thumbnail_url, isfolder=True, customparams=params)
+                        if playlist is None:
+                            common.addListItem(name, url="", mode="gamechoosevideo", iconimage=thumbnail_url, isfolder=True, customparams=params)
+                        else:
+                            chooseGameVideoMenu(playlist, params)
 
                 remaining_keys = set(game.keys()).difference(processed_keys)
                 utils.log('Remaining keys: {}'.format(remaining_keys), xbmc.LOGDEBUG)
@@ -321,19 +324,22 @@ def play_game():
     if game is not None:
         common.play(game)
 
-def chooseGameVideoMenu():
-    video_id = vars.params.get("video_id")
-    video_type = vars.params.get("video_type")
-    seo_name = vars.params.get("seo_name")
-    has_away_feed = vars.params.get("has_away_feed", "0") == "1"
-    has_condensed_game = vars.params.get("has_condensed_game", "0") == "1"
-    start_time = vars.params.get("start_time")
-    duration = vars.params.get("duration")
+def chooseGameVideoMenu(playlist=None, paramsX=None):
+    if paramsX is None:
+        paramsX = vars.params
+    video_id = paramsX.get("video_id")
+    video_type = paramsX.get("video_type")
+    seo_name = paramsX.get("seo_name")
+    has_away_feed = paramsX.get("has_away_feed", "0") == "1"
+    has_condensed_game = paramsX.get("has_condensed_game", "0") == "1"
+    start_time = paramsX.get("start_time")
+    duration = paramsX.get("duration")
     game_data_json = json.loads(utils.fetch(vars.config['game_data_endpoint'] % seo_name))
     game_state = game_data_json['gameState']
-    game_home_team = vars.params.get("home_team")
-    game_visitor_team = vars.params.get("visitor_team")
+    game_home_team = paramsX.get("home_team")
+    game_visitor_team = paramsX.get("visitor_team")
     game_cameras = []
+    foldername = paramsX.get("foldername")
     if 'multiCameras' in game_data_json:
         game_cameras = game_data_json['multiCameras'].split(",")
 
@@ -341,6 +347,8 @@ def chooseGameVideoMenu():
     nba_cameras = {}
     for camera in nba_config['content']['cameras']:
         nba_cameras[camera['number']] = camera['name']
+
+    streams = []
 
     if has_away_feed:
         # Create the "Home" and "Away" list items
@@ -362,7 +370,10 @@ def chooseGameVideoMenu():
                 'start_time': start_time,
                 'duration': duration,
             }
-            common.addListItem(listitemname, url="", mode="playgame", iconimage="", customparams=params)
+            if playlist is None:
+                common.addListItem(listitemname, url="", mode="playgame", iconimage="", customparams=params)
+            else:
+                streams.append([True, foldername + ' - ' + listitemname, get_link(url="", mode="playgame", customparams=params)])
     else:
         # Add a "Home" list item
         params = {
@@ -372,7 +383,10 @@ def chooseGameVideoMenu():
             'start_time': start_time,
             'duration': duration,
         }
-        common.addListItem("Full game", url="", mode="playgame", iconimage="", customparams=params)
+        if playlist is None:
+            common.addListItem("Full game", url="", mode="playgame", iconimage="", customparams=params)
+        else:
+            streams.append([True, foldername + ' - Full game', get_link(url="", mode="playgame", customparams=params)])
 
     if vars.show_cameras:
         utils.log(nba_cameras, xbmc.LOGDEBUG)
@@ -396,25 +410,66 @@ def chooseGameVideoMenu():
             }
 
             name = "Camera %d: %s" % (camera_number, nba_cameras.get(camera_number, 'Unknown'))
-            common.addListItem(name, url="", mode="playgame", iconimage="", customparams=params)
+            if playlist is None:
+                common.addListItem(name, url="", mode="playgame", iconimage="", customparams=params)
+            elif "ESPN" in name or "ABC" in name or "TNT" in name or "NBA TV" in name: #only interesting additional streams
+                streams.append([True, foldername + ' - ' + name, get_link(url="", mode="playgame", customparams=params)])
 
     # Live games have no condensed or highlight link
     if video_type != "live":
         # Create the "Condensed" list item
+        params = {
+            'video_id': video_id,
+            'video_type': 'condensed',
+            'game_state': game_state
+        }
         if has_condensed_game:
-            params = {
-                'video_id': video_id,
-                'video_type': 'condensed',
-                'game_state': game_state
-            }
-            common.addListItem("Condensed game", url="", mode="playgame", iconimage="", customparams=params)
+            if playlist is None:
+                common.addListItem("Condensed game", url="", mode="playgame", iconimage="", customparams=params)
+        elif playlist is not None: #manually add to playlist anyways
+            streams.append([False, foldername + ' - Condensed game', get_link(url="", mode="playgame", customparams=params)])
 
         # Get the highlights video if available
         highlights_url = getHighlightGameUrl(video_id)
         if highlights_url:
-            common.addVideoListItem("Highlights", highlights_url, iconimage="")
+            if playlist is None:
+                common.addVideoListItem("Highlights", highlights_url, iconimage="")
+            else:
+                streams.append([False, foldername + ' - Highlights', get_link(url=highlights_url)])
 
-    xbmcplugin.endOfDirectory(handle=int(sys.argv[1]))
+    if playlist is None:
+        xbmcplugin.endOfDirectory(handle=int(sys.argv[1]))
+    else:
+        #reorder playlist items before adding
+        reorder_streams(streams)
+        for s in streams:
+            playlist.add(s[2], xbmcgui.ListItem(s[1]))
+
+def get_link(**kwargs):
+    url = kwargs.get('url')
+    if len(url) < 1: #plugin video
+        return 'plugin://plugin.video.nba/?' + get_params(kwargs)
+    else: #highlights
+        return url
+
+def get_params(kwargs):
+    res = ''
+    for k,v in kwargs.items():
+        if k != 'url':
+            if k == 'customparams':
+                res += '&%s'%(get_params(kwargs.get('customparams')))
+            else:
+                res += '&%s=%s'%(k,v)
+    return res[1:]
+
+def reorder_streams(streams):
+    #prefer national TV commentators (ESPN-ABC-TNT) for full game
+    for i in range(len(streams)):
+        if streams[i][0] and ("ESPN" in streams[i][1] or "ABC" in streams[i][1] or "TNT" in streams[i][1]):
+            streams.insert(0, streams.pop(i))
+            break
+    #TODO: put in team preferences for home/away commentators
+    #TODO: use in team preferences (0=always full, 1=full if against 1/2, 2=condensed, 3=highlights)
 
 def chooseGameMenu(mode, video_type, date2Use=None):
     try:
@@ -431,33 +486,37 @@ def chooseGameMenu(mode, video_type, date2Use=None):
         date = date - timedelta(day-1)
 
         if vars.use_alternative_archive_menu:
-            if mode == 'last4-10days':
+            playlist = None
+            if (mode == 'playlist1w' or mode == 'playlist4-10' or mode == 'playlist2w' or mode == 'playlist3w'):
+                playlist = xbmc.PlayList(1)
+                playlist.clear()
+            if mode == 'last4-10days' or mode == 'playlist4-10':
                 if day <= 5:
                     date = date - timedelta(7)
-                addGamesLinks(date, video_type)
+                addGamesLinks(date, video_type, playlist)
                 if day <= 5 and day > 1:#no need to query empty list when day < 2
                     date = date + timedelta(7)
-                    addGamesLinks(date, video_type)
+                    addGamesLinks(date, video_type, playlist)
             else:
                 #to counter empty list on mondays for 'this week'
                 if day == 1:
                     date = date - timedelta(7)
 
-                if mode == "last2weeks":
+                if mode == "last2weeks" or mode == 'playlist2w':
                     date = date - timedelta(7)
-                if mode == "last3weeks":
+                if mode == "last3weeks" or mode == 'playlist3w':
                     date = date - timedelta(7)
 
-                addGamesLinks(date, video_type)
+                addGamesLinks(date, video_type, playlist)
 
-                if mode == "last2weeks":
+                if mode == "last2weeks" or mode == 'playlist2w':
                     date = date + timedelta(7)
-                    addGamesLinks(date, video_type)
-                if mode == "last3weeks":
+                    addGamesLinks(video_type, playlist)
+                if mode == "last3weeks" or mode == 'playlist3w':
                     date = date + timedelta(7)
-                    addGamesLinks(date, video_type)
+                    addGamesLinks(date, video_type, playlist)
                     date = date + timedelta(7)
-                    addGamesLinks(date, video_type)
+                    addGamesLinks(date, video_type, playlist)
         else:
             if mode == "lastweek":
                 date = date - timedelta(7)
