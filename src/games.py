@@ -426,7 +426,7 @@ def chooseGameVideoMenu(playlist=None, paramsX=None):
         if has_condensed_game:
             if playlist is None:
                 common.addListItem("Condensed game", url="", mode="playgame", iconimage="", customparams=params)
-        elif playlist is not None: #manually add to playlist anyways
+        if playlist is not None: #manually add to playlist anyways, maybe will come online later...
             streams.append([False, foldername + ' - Condensed game', get_link(url="", mode="playgame", customparams=params)])
 
         # Get the highlights video if available
