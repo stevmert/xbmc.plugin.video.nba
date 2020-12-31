@@ -15,4 +15,38 @@
 		<setting id="fanart_image" type="text" label="50006" visible="false" default="" />
 		<setting id="cameras" type="bool" label="50011" default="true" />
 	</category>
+	<!-- playlists -->
+	<category label="50130">
+		<setting id="enable_playlists" type="bool" label="50131" default="false" />
+		<setting id="Hawks" type="number" label="50100" default="0" />
+		<setting id="Celtics" type="number" label="50101" default="0" />
+		<setting id="Nets" type="number" label="50102" default="0" />
+		<setting id="Hornets" type="number" label="50103" default="0" />
+		<setting id="Bulls" type="number" label="50104" default="0" />
+		<setting id="Cavaliers" type="number" label="50105" default="0" />
+		<setting id="Mavericks" type="number" label="50106" default="0" />
+		<setting id="Nuggets" type="number" label="50107" default="0" />
+		<setting id="Pistons" type="number" label="50108" default="0" />
+		<setting id="Warriors" type="number" label="50109" default="0" />
+		<setting id="Rockets" type="number" label="50110" default="0" />
+		<setting id="Pacers" type="number" label="50111" default="0" />
+		<setting id="Clippers" type="number" label="50112" default="0" />
+		<setting id="Lakers" type="number" label="50113" default="0" />
+		<setting id="Grizzlies" type="number" label="50114" default="0" />
+		<setting id="Heat" type="number" label="50115" default="0" />
+		<setting id="Bucks" type="number" label="50116" default="0" />
+		<setting id="Timberwolves" type="number" label="50117" default="0" />
+		<setting id="Pelicans" type="number" label="50118" default="0" />
+		<setting id="Knicks" type="number" label="50119" default="0" />
+		<setting id="Thunder" type="number" label="50120" default="0" />
+		<setting id="Magic" type="number" label="50121" default="0" />
+		<setting id="76ers" type="number" label="50122" default="0" />
+		<setting id="Suns" type="number" label="50123" default="0" />
+		<setting id="Trail Blazers" type="number" label="50124" default="0" />
+		<setting id="Kings" type="number" label="50125" default="0" />
+		<setting id="Spurs" type="number" label="50126" default="0" />
+		<setting id="Raptors" type="number" label="50127" default="0" />
+		<setting id="Jazz" type="number" label="50128" default="0" />
+		<setting id="Wizards" type="number" label="50129" default="0" />
+	</category>
 </settings>
