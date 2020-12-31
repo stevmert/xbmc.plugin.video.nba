@@ -17,6 +17,18 @@ __addon_id__ = "plugin.video.nba"
 settings = xbmcaddon.Addon(id=__addon_id__)
 show_records_and_scores = json.loads(settings.getSetting(id="records_and_scores"))
 use_alternative_archive_menu = json.loads(settings.getSetting(id="alternative_archive_menu"))
+enable_playlists = json.loads(settings.getSetting(id="enable_playlists"))
+team_preferences = {}
+for t in ['Hawks', 'Celtics', 'Nets', 'Hornets', 'Bulls', 'Cavaliers', 'Mavericks', 'Nuggets', 'Pistons', 'Warriors', 'Rockets', 'Pacers', 'Clippers', 'Lakers', 'Grizzlies', 'Heat', 'Bucks', 'Timberwolves', 'Pelicans', 'Knicks', 'Thunder', 'Magic', '76ers', 'Suns', 'Trail Blazers', 'Kings', 'Spurs', 'Raptors', 'Jazz', 'Wizards']:
+    try:
+        value = int(json.loads(settings.getSetting(id=t)))
+        if value < 0:
+            value = 0
+        if value > 3:
+            value = 3
+        team_preferences[t] = value
+    except:
+        team_preferences[t] = 0
 debug = json.loads(settings.getSetting(id="debug"))
 use_cached_thumbnails = json.loads(settings.getSetting(id="cached_thumbnails"))
 use_local_timezone = json.loads(settings.getSetting(id="local_timezone"))
