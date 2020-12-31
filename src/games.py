@@ -155,7 +155,7 @@ def process_key(dictionary, key, processed_keys):
     processed_keys.add(key)
     return dictionary.get(key)
 
-def addGamesLinks(date='', video_type="archive", playlist=None):
+def addGamesLinks(date='', video_type="archive", playlist=None, in_a_hurry=False):
     try:
         now_datetime_est = utils.nowEST()
         schedule = 'https://nlnbamdnyc-a.akamaihd.net/fs/nba/feeds_s2019/schedule/%04d/%d_%d.js?t=%d' % \
@@ -295,7 +295,7 @@ def addGamesLinks(date='', video_type="archive", playlist=None):
                         if playlist is None:
                             common.addListItem(name, url="", mode="gamechoosevideo", iconimage=thumbnail_url, isfolder=True, customparams=params)
                         else:
-                            chooseGameVideoMenu(playlist, params)
+                            chooseGameVideoMenu(playlist, params, in_a_hurry)
 
                 remaining_keys = set(game.keys()).difference(processed_keys)
                 utils.log('Remaining keys: {}'.format(remaining_keys), xbmc.LOGDEBUG)
@@ -324,7 +324,7 @@ def play_game():
     if game is not None:
         common.play(game)
 
-def chooseGameVideoMenu(playlist=None, paramsX=None):
+def chooseGameVideoMenu(playlist=None, paramsX=None, in_a_hurry=False):
     if paramsX is None:
         paramsX = vars.params
     video_id = paramsX.get("video_id")
@@ -412,7 +412,7 @@ def chooseGameVideoMenu(playlist=None, paramsX=None):
             name = "Camera %d: %s" % (camera_number, nba_cameras.get(camera_number, 'Unknown'))
             if playlist is None:
                 common.addListItem(name, url="", mode="playgame", iconimage="", customparams=params)
-            elif "ESPN" in name or "ABC" in name or "TNT" in name or "NBA TV" in name: #only interesting additional streams
+            elif "ESPN" in name or "ABC" in name or "TNT" in name: #only interesting additional streams (also or "NBA TV" in name?)
                 streams.append([True, foldername + ' - ' + name, get_link(url="", mode="playgame", customparams=params)])
 
     # Live games have no condensed or highlight link
@@ -441,7 +441,7 @@ def chooseGameVideoMenu(playlist=None, paramsX=None):
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]))
     else:
         #reorder playlist items before adding
-        reorder_streams(streams)
+        reorder_streams(streams, game_home_team, game_visitor_team, in_a_hurry)
         for s in streams:
             playlist.add(s[2], xbmcgui.ListItem(s[1]))
 
@@ -462,14 +462,105 @@ def get_params(kwargs):
                 res += '&%s=%s'%(k,v)
     return res[1:]
 
-def reorder_streams(streams):
+def reorder_streams(streams, home_team, visitor_team, in_a_hurry):
     #prefer national TV commentators (ESPN-ABC-TNT) for full game
+    has_national_commentators = False
     for i in range(len(streams)):
         if streams[i][0] and ("ESPN" in streams[i][1] or "ABC" in streams[i][1] or "TNT" in streams[i][1]):
             streams.insert(0, streams.pop(i))
+            has_national_commentators = True
             break
-    #TODO: put in team preferences for home/away commentators
-    #TODO: use in team preferences (0=always full, 1=full if against 1/2, 2=condensed, 3=highlights)
+    #team preferences
+    # 0=always full, 1=full if against 1 otherwise condensed but keep full game if against 2 unless in hurry mode (after condensed), 2=condensed unless against 3, 3=highlights
+    # team_preferences['Hawks'] = 1
+    # team_preferences['Celtics'] = 2
+    # team_preferences['Nets'] = 1
+    # team_preferences['Hornets'] = 2
+    # team_preferences['Bulls'] = 2
+    # team_preferences['Cavaliers'] = 3
+    # team_preferences['Mavericks'] = 1
+    # team_preferences['Nuggets'] = 1
+    # team_preferences['Pistons'] = 3
+    # team_preferences['Warriors'] = 1
+    # team_preferences['Rockets'] = 2
+    # team_preferences['Pacers'] = 3
+    # team_preferences['Clippers'] = 1
+    # team_preferences['Lakers'] = 1
+    # team_preferences['Grizzlies'] = 2
+    # team_preferences['Heat'] = 0
+    # team_preferences['Bucks'] = 1
+    # team_preferences['Timberwolves'] = 1
+    # team_preferences['Pelicans'] = 1
+    # team_preferences['Knicks'] = 3
+    # team_preferences['Thunder'] = 3
+    # team_preferences['Magic'] = 3
+    # team_preferences['76ers'] = 1
+    # team_preferences['Suns'] = 1
+    # team_preferences['Trail Blazers'] = 1
+    # team_preferences['Kings'] = 2
+    # team_preferences['Spurs'] = 3
+    # team_preferences['Raptors'] = 3
+    # team_preferences['Jazz'] = 2
+    # team_preferences['Wizards'] = 2
+    #TODO: commentator preferences (if not in list, no preference; if in list, use index as rank) -> store in settings, how???
+    commentator_preferences = ["Heat", "Mavericks", "Nuggets"]
+
+    #0 as default to handle other events (press conferences and such)
+    pref_home = vars.team_preferences.get(home_team, 0)
+    pref_visitor = vars.team_preferences.get(visitor_team, 0)
+
+    only_highlights = pref_home+pref_visitor > 4
+    only_condensed_and_highlights = pref_home == 2 and pref_visitor == 2
+    full_after_condensed = (pref_home == 1 and pref_visitor > 1) or (pref_home > 1 and pref_visitor == 1) or (in_a_hurry and pref_home == 1 and pref_visitor == 1)
+
+    has_condensed = False
+    has_highlights = False
+    for s in streams:
+        if s[0]:
+            continue
+        elif "Condensed" in s[1]:
+            has_condensed = True
+        elif "Highlights" in s[1]:
+            has_highlights = True
+    #if unavailable, escalate preference
+    if only_highlights and not has_highlights:
+        only_condensed_and_highlights = True
+    if only_condensed_and_highlights and not has_condensed:
+        full_after_condensed = True
+
+    if only_highlights:
+        for i in range(len(streams)-1, -1, -1):
+            if streams[i][0] or "Condensed" in streams[i][1]:
+                del streams[i]
+    elif only_condensed_and_highlights:
+        for i in range(len(streams)-1, -1, -1):
+            if streams[i][0]:
+                del streams[i]
+    elif full_after_condensed:
+        for i in range(len(streams)):
+            if not(streams[i][0]) and "Condensed" in streams[i][1]:
+                streams.insert(0, streams.pop(i))
+                break
+    if not(only_highlights or only_condensed_and_highlights):
+        #has_national_commentators
+        visitor_is_prefered = visitor_team in commentator_preferences
+        #default to home
+        home_is_prefered = not(has_national_commentators or visitor_is_prefered) or (home_team in commentator_preferences)
+        if (has_national_commentators or home_is_prefered) and not visitor_is_prefered:
+            for i in range(len(streams)):
+                if streams[i][0] and "away feed" in streams[i][1]:
+                    del streams[i]
+                    break
+        if (has_national_commentators or visitor_is_prefered) and not home_is_prefered:
+            for i in range(len(streams)):
+                if streams[i][0] and "home feed" in streams[i][1]:
+                    del streams[i]
+                    break
+        if home_team in commentator_preferences and visitor_is_prefered and commentator_preferences.index(home_team) > commentator_preferences.index(visitor_team):
+            for i in range(len(streams)-1):
+                if streams[i][0] and streams[i+1][0] and "home feed" in streams[i][1] and "away feed" in streams[i+1][1]:
+                    streams[i+1], streams[i] = streams[i], streams[i+1]
+                    break
 
 def chooseGameMenu(mode, video_type, date2Use=None):
     try:
@@ -487,36 +578,37 @@ def chooseGameMenu(mode, video_type, date2Use=None):
 
         if vars.use_alternative_archive_menu:
             playlist = None
-            if (mode == 'playlist1w' or mode == 'playlist4-10' or mode == 'playlist2w' or mode == 'playlist3w'):
+            in_a_hurry = mode.endswith('h')
+            if 'playlist' in mode:
                 playlist = xbmc.PlayList(1)
                 playlist.clear()
-            if mode == 'last4-10days' or mode == 'playlist4-10':
+            if '4-10' in mode:
                 if day <= 5:
                     date = date - timedelta(7)
-                addGamesLinks(date, video_type, playlist)
+                addGamesLinks(date, video_type, playlist, in_a_hurry)
                 if day <= 5 and day > 1:#no need to query empty list when day < 2
                     date = date + timedelta(7)
-                    addGamesLinks(date, video_type, playlist)
+                    addGamesLinks(date, video_type, playlist, in_a_hurry)
             else:
                 #to counter empty list on mondays for 'this week'
                 if day == 1:
                     date = date - timedelta(7)
 
-                if mode == "last2weeks" or mode == 'playlist2w':
+                if "last2weeks" in mode or 'playlist2w' in mode:
                     date = date - timedelta(7)
-                if mode == "last3weeks" or mode == 'playlist3w':
+                if "last3weeks" in mode or 'playlist3w' in mode:
                     date = date - timedelta(7)
 
-                addGamesLinks(date, video_type, playlist)
+                addGamesLinks(date, video_type, playlist, in_a_hurry)
 
-                if mode == "last2weeks" or mode == 'playlist2w':
+                if "last2weeks" in mode or 'playlist2w' in mode:
                     date = date + timedelta(7)
-                    addGamesLinks(video_type, playlist)
-                if mode == "last3weeks" or mode == 'playlist3w':
+                    addGamesLinks(video_type, playlist, in_a_hurry)
+                if "last3weeks" in mode or 'playlist3w' in mode:
                     date = date + timedelta(7)
-                    addGamesLinks(date, video_type, playlist)
+                    addGamesLinks(date, video_type, playlist, in_a_hurry)
                     date = date + timedelta(7)
-                    addGamesLinks(date, video_type, playlist)
+                    addGamesLinks(date, video_type, playlist, in_a_hurry)
         else:
             if mode == "lastweek":
                 date = date - timedelta(7)
