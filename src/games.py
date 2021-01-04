@@ -412,7 +412,7 @@ def chooseGameVideoMenu(playlist=None, paramsX=None, in_a_hurry=False):
             name = "Camera %d: %s" % (camera_number, nba_cameras.get(camera_number, 'Unknown'))
             if playlist is None:
                 common.addListItem(name, url="", mode="playgame", iconimage="", customparams=params)
-            elif "ESPN" in name or "ABC" in name or "TNT" in name: #only interesting additional streams (also or "NBA TV" in name?)
+            elif " ESPN" in name or " ABC" in name or " TNT" in name: #only interesting additional streams (also or "NBA TV" in name?), but not e.g. Spanish (ESPN)
                 streams.append([True, foldername + ' - ' + name, get_link(url="", mode="playgame", customparams=params)])
 
     # Live games have no condensed or highlight link
@@ -603,7 +603,7 @@ def chooseGameMenu(mode, video_type, date2Use=None):
 
                 if "last2weeks" in mode or 'playlist2w' in mode:
                     date = date + timedelta(7)
-                    addGamesLinks(video_type, playlist, in_a_hurry)
+                    addGamesLinks(date, video_type, playlist, in_a_hurry)
                 if "last3weeks" in mode or 'playlist3w' in mode:
                     date = date + timedelta(7)
                     addGamesLinks(date, video_type, playlist, in_a_hurry)
