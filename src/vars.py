@@ -10,8 +10,8 @@ try:
 except:
     import storageserverdummy as StorageServer
 
-__addon_name__ = "NBA League Pass"
-__addon_id__ = "plugin.video.nba"
+__addon_name__ = "NBA League Pass II"
+__addon_id__ = "video.nba.leaguepass.sm"
 
 # Global variables
 settings = xbmcaddon.Addon(id=__addon_id__)
