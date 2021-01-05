@@ -275,6 +275,7 @@ def addGamesLinks(date='', video_type="archive", playlist=None, in_a_hurry=False
                             'has_away_feed': "1" if has_away_feed else "0",
                             'has_condensed_game': "1" if has_condensed_video else "0",
                             'foldername': name,
+                            'iconimage': thumbnail_url,
                         }
 
                         if 'st' in game:
@@ -340,6 +341,7 @@ def chooseGameVideoMenu(playlist=None, paramsX=None, in_a_hurry=False):
     game_visitor_team = paramsX.get("visitor_team")
     game_cameras = []
     foldername = paramsX.get("foldername")
+    iconimage = paramsX.get('iconimage', "")
     if 'multiCameras' in game_data_json:
         game_cameras = game_data_json['multiCameras'].split(",")
 
@@ -371,7 +373,7 @@ def chooseGameVideoMenu(playlist=None, paramsX=None, in_a_hurry=False):
                 'duration': duration,
             }
             if playlist is None:
-                common.addListItem(listitemname, url="", mode="playgame", iconimage="", customparams=params)
+                common.addListItem(listitemname, url="", mode="playgame", iconimage=iconimage, customparams=params)
             else:
                 streams.append([True, foldername + ' - ' + listitemname, get_link(url="", mode="playgame", customparams=params)])
     else:
@@ -384,7 +386,7 @@ def chooseGameVideoMenu(playlist=None, paramsX=None, in_a_hurry=False):
             'duration': duration,
         }
         if playlist is None:
-            common.addListItem("Full game", url="", mode="playgame", iconimage="", customparams=params)
+            common.addListItem("Full game", url="", mode="playgame", iconimage=iconimage, customparams=params)
         else:
             streams.append([True, foldername + ' - Full game', get_link(url="", mode="playgame", customparams=params)])
 
@@ -411,7 +413,7 @@ def chooseGameVideoMenu(playlist=None, paramsX=None, in_a_hurry=False):
 
             name = "Camera %d: %s" % (camera_number, nba_cameras.get(camera_number, 'Unknown'))
             if playlist is None:
-                common.addListItem(name, url="", mode="playgame", iconimage="", customparams=params)
+                common.addListItem(name, url="", mode="playgame", iconimage=iconimage, customparams=params)
             elif " ESPN" in name or " ABC" in name or " TNT" in name: #only interesting additional streams (also or "NBA TV" in name?), but not e.g. Spanish (ESPN)
                 streams.append([True, foldername + ' - ' + name, get_link(url="", mode="playgame", customparams=params)])
 
@@ -421,11 +423,11 @@ def chooseGameVideoMenu(playlist=None, paramsX=None, in_a_hurry=False):
         params = {
             'video_id': video_id,
             'video_type': 'condensed',
-            'game_state': game_state
+            'game_state': game_state,
         }
         if has_condensed_game:
             if playlist is None:
-                common.addListItem("Condensed game", url="", mode="playgame", iconimage="", customparams=params)
+                common.addListItem("Condensed game", url="", mode="playgame", iconimage=iconimage, customparams=params)
         if playlist is not None: #manually add to playlist anyways, maybe will come online later...
             streams.append([False, foldername + ' - Condensed game', get_link(url="", mode="playgame", customparams=params)])
 
@@ -433,7 +435,7 @@ def chooseGameVideoMenu(playlist=None, paramsX=None, in_a_hurry=False):
         highlights_url = getHighlightGameUrl(video_id)
         if highlights_url:
             if playlist is None:
-                common.addVideoListItem("Highlights", highlights_url, iconimage="")
+                common.addVideoListItem("Highlights", highlights_url, iconimage=iconimage)
             else:
                 streams.append([False, foldername + ' - Highlights', get_link(url=highlights_url)])
 
@@ -443,7 +445,18 @@ def chooseGameVideoMenu(playlist=None, paramsX=None, in_a_hurry=False):
         #reorder playlist items before adding
         reorder_streams(streams, game_home_team, game_visitor_team, in_a_hurry)
         for s in streams:
-            playlist.add(s[2], xbmcgui.ListItem(s[1]))
+            #trying to add thumbs to playlist item... (can't seem to get it as icon, but it is shown on the right and on the background. However, lost again when saving the playlist.)
+            item = xbmcgui.ListItem(s[1], iconImage=iconimage, thumbnailImage=iconimage)
+            try:
+                art_keys = ['thumb', 'poster', 'banner', 'fanart', 'clearart', 'clearlogo', 'landscape', 'icon']
+                art = dict(zip(art_keys, [iconimage for x in art_keys]))
+                item.setArt(art)
+                item.setInfo(type="video", infoLabels={"title": s[1]})
+                item.setThumbnailImage(iconimage)
+                item.setProperty('fanart_image', iconimage)
+            except:
+                pass
+            playlist.add(s[2], item)
 
 def get_link(**kwargs):
     url = kwargs.get('url')
