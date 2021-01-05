@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="video.nba.leaguepass.sm"
        name="NBA League Pass II"
-       version="1.0.2"
+       version="1.0.3"
        provider-name="maxgalbu, ptsampoukas, robla, kokan, stevmert">
   <requires>
     <import addon="xbmc.python" version="2.20.0"/>
