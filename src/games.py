@@ -461,7 +461,8 @@ def chooseGameVideoMenu(playlist=None, paramsX=None, in_a_hurry=False):
 def get_link(**kwargs):
     url = kwargs.get('url')
     if len(url) < 1: #plugin video
-        return 'plugin://plugin.video.nba/?' + get_params(kwargs)
+        #return 'plugin://plugin.video.nba/?' + get_params(kwargs)
+        return 'plugin://video.nba.leaguepass.sm/?' + get_params(kwargs)
     else: #highlights
         return url
 
