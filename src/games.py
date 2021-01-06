@@ -486,38 +486,9 @@ def reorder_streams(streams, home_team, visitor_team, in_a_hurry):
             break
     #team preferences
     # 0=always full, 1=full if against 1 otherwise condensed but keep full game if against 2 unless in hurry mode (after condensed), 2=condensed unless against 3, 3=highlights
-    # team_preferences['Hawks'] = 1
-    # team_preferences['Celtics'] = 2
-    # team_preferences['Nets'] = 1
-    # team_preferences['Hornets'] = 2
-    # team_preferences['Bulls'] = 2
-    # team_preferences['Cavaliers'] = 3
-    # team_preferences['Mavericks'] = 1
-    # team_preferences['Nuggets'] = 1
-    # team_preferences['Pistons'] = 3
-    # team_preferences['Warriors'] = 1
-    # team_preferences['Rockets'] = 2
-    # team_preferences['Pacers'] = 3
-    # team_preferences['Clippers'] = 1
-    # team_preferences['Lakers'] = 1
-    # team_preferences['Grizzlies'] = 2
-    # team_preferences['Heat'] = 0
-    # team_preferences['Bucks'] = 1
-    # team_preferences['Timberwolves'] = 1
-    # team_preferences['Pelicans'] = 1
-    # team_preferences['Knicks'] = 3
-    # team_preferences['Thunder'] = 3
-    # team_preferences['Magic'] = 3
-    # team_preferences['76ers'] = 1
-    # team_preferences['Suns'] = 1
-    # team_preferences['Trail Blazers'] = 1
-    # team_preferences['Kings'] = 2
-    # team_preferences['Spurs'] = 3
-    # team_preferences['Raptors'] = 3
-    # team_preferences['Jazz'] = 2
-    # team_preferences['Wizards'] = 2
     #TODO: commentator preferences (if not in list, no preference; if in list, use index as rank) -> store in settings, how???
-    commentator_preferences = ["Heat", "Mavericks", "Nuggets"]
+	#my own personal preferences...
+    commentator_preferences = ["Heat", "Warriors", "Mavericks", "Hawks", "Nuggets"]
 
     #0 as default to handle other events (press conferences and such)
     pref_home = vars.team_preferences.get(home_team, 0)
