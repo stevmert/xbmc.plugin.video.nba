@@ -498,6 +498,10 @@ def reorder_streams(streams, home_team, visitor_team, in_a_hurry):
         for i in range(len(streams)-1, -1, -1):
             del streams[i]
         return
+	if pref_home > 3:
+		pref_home = 3
+	elif pref_visitor > 3:
+		pref_visitor = 3
     only_highlights = pref_home+pref_visitor > 4
     only_condensed_and_highlights = pref_home == 2 and pref_visitor == 2
     full_after_condensed = (pref_home == 1 and pref_visitor > 1) or (pref_home > 1 and pref_visitor == 1) or (in_a_hurry and pref_home == 1 and pref_visitor == 1)
