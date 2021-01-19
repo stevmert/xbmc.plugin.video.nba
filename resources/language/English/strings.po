@@ -86,121 +86,121 @@ msgid "Enable playlists (requires alternative archive menu)"
 msgstr ""
 
 msgctxt "#50100"
-msgid "Hawks preference in playlist generation (0-3, higher is more)"
+msgid "Hawks preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50101"
-msgid "Celtics preference in playlist generation (0-3, higher is more)"
+msgid "Celtics preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50102"
-msgid "Nets preference in playlist generation (0-3, higher is more)"
+msgid "Nets preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50103"
-msgid "Hornets preference in playlist generation (0-3, higher is more)"
+msgid "Hornets preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50104"
-msgid "Bulls preference in playlist generation (0-3, higher is more)"
+msgid "Bulls preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50105"
-msgid "Cavaliers preference in playlist generation (0-3, higher is more)"
+msgid "Cavaliers preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50106"
-msgid "Mavericks preference in playlist generation (0-3, higher is more)"
+msgid "Mavericks preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50107"
-msgid "Nuggets preference in playlist generation (0-3, higher is more)"
+msgid "Nuggets preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50108"
-msgid "Pistons preference in playlist generation (0-3, higher is more)"
+msgid "Pistons preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50109"
-msgid "Warriors preference in playlist generation (0-3, higher is more)"
+msgid "Warriors preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50110"
-msgid "Rockets preference in playlist generation (0-3, higher is more)"
+msgid "Rockets preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50111"
-msgid "Pacers preference in playlist generation (0-3, higher is more)"
+msgid "Pacers preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50112"
-msgid "Clippers preference in playlist generation (0-3, higher is more)"
+msgid "Clippers preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50113"
-msgid "Lakers preference in playlist generation (0-3, higher is more)"
+msgid "Lakers preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50114"
-msgid "Grizzlies preference in playlist generation (0-3, higher is more)"
+msgid "Grizzlies preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50115"
-msgid "Heat preference in playlist generation (0-3, higher is more)"
+msgid "Heat preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50116"
-msgid "Bucks preference in playlist generation (0-3, higher is more)"
+msgid "Bucks preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50117"
-msgid "Timberwolves preference in playlist generation (0-3, higher is more)"
+msgid "Timberwolves preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50118"
-msgid "Pelicans preference in playlist generation (0-3, higher is more)"
+msgid "Pelicans preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50119"
-msgid "Knicks preference in playlist generation (0-3, higher is more)"
+msgid "Knicks preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50120"
-msgid "Thunder preference in playlist generation (0-3, higher is more)"
+msgid "Thunder preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50121"
-msgid "Magic preference in playlist generation (0-3, higher is more)"
+msgid "Magic preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50122"
-msgid "76ers preference in playlist generation (0-3, higher is more)"
+msgid "76ers preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50123"
-msgid "Suns preference in playlist generation (0-3, higher is more)"
+msgid "Suns preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50124"
-msgid "Trail Blazers preference in playlist generation (0-3, higher is more)"
+msgid "Trail Blazers preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50125"
-msgid "Kings preference in playlist generation (0-3, higher is more)"
+msgid "Kings preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50126"
-msgid "Spurs preference in playlist generation (0-3, higher is more)"
+msgid "Spurs preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50127"
-msgid "Raptors preference in playlist generation (0-3, higher is more)"
+msgid "Raptors preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50128"
-msgid "Jazz preference in playlist generation (0-3, higher is more)"
+msgid "Jazz preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
 
 msgctxt "#50129"
-msgid "Wizards preference in playlist generation (0-3, higher is more)"
+msgid "Wizards preference in playlist generation (0=always full, 1=mostly full, 2=condensed, 3=highlights, 4=ignore)"
 msgstr ""
