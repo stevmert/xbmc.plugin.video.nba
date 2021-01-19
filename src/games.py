@@ -487,7 +487,7 @@ def reorder_streams(streams, home_team, visitor_team, in_a_hurry):
     #team preferences
     # 0=always full, 1=full if against 1 otherwise condensed but keep full game if against 2 unless in hurry mode (after condensed), 2=condensed unless against 3, 3=highlights
     #TODO: commentator preferences (if not in list, no preference; if in list, use index as rank) -> store in settings, how???
-	#my own personal preferences...
+    #my own personal preferences...
     commentator_preferences = ["Heat", "Warriors", "Mavericks", "Hawks", "Nuggets"]
 
     #0 as default to handle other events (press conferences and such)
@@ -567,6 +567,7 @@ def chooseGameMenu(mode, video_type, date2Use=None):
             if 'playlist' in mode:
                 playlist = xbmc.PlayList(1)
                 playlist.clear()
+            
             if '4-10' in mode:
                 if day <= 5:
                     date = date - timedelta(7)
@@ -576,24 +577,19 @@ def chooseGameMenu(mode, video_type, date2Use=None):
                     addGamesLinks(date, video_type, playlist, in_a_hurry)
             else:
                 #to counter empty list on mondays for 'this week'
-                if day == 1:
+                #playlist.add("", xbmcgui.ListItem(str(date)))
+                if day < 2:
                     date = date - timedelta(7)
 
+                nr_weeks = 1
                 if "last2weeks" in mode or 'playlist2w' in mode:
-                    date = date - timedelta(7)
+                    nr_weeks = 2
                 if "last3weeks" in mode or 'playlist3w' in mode:
-                    date = date - timedelta(14)
+                    nr_weeks = 3
 
-                addGamesLinks(date, video_type, playlist, in_a_hurry)
-
-                if "last2weeks" in mode or 'playlist2w' in mode:
-                    date = date + timedelta(7)
-                    addGamesLinks(date, video_type, playlist, in_a_hurry)
-                if "last3weeks" in mode or 'playlist3w' in mode:
-                    date = date + timedelta(7)
-                    addGamesLinks(date, video_type, playlist, in_a_hurry)
-                    date = date + timedelta(7)
-                    addGamesLinks(date, video_type, playlist, in_a_hurry)
+                for n in range(nr_weeks, 0, -1):
+                    date1 = date - timedelta(7 * (n-1))
+                    addGamesLinks(date1, video_type, playlist, in_a_hurry)
         else:
             if mode == "lastweek":
                 date = date - timedelta(7)
