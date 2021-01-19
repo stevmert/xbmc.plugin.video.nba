@@ -582,7 +582,7 @@ def chooseGameMenu(mode, video_type, date2Use=None):
                 if "last2weeks" in mode or 'playlist2w' in mode:
                     date = date - timedelta(7)
                 if "last3weeks" in mode or 'playlist3w' in mode:
-                    date = date - timedelta(7)
+                    date = date - timedelta(14)
 
                 addGamesLinks(date, video_type, playlist, in_a_hurry)
 
