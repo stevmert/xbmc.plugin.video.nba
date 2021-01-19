@@ -584,7 +584,7 @@ def chooseGameMenu(mode, video_type, date2Use=None):
                 nr_weeks = 1
                 if "last2weeks" in mode or 'playlist2w' in mode:
                     nr_weeks = 2
-                if "last3weeks" in mode or 'playlist3w' in mode:
+                elif "last3weeks" in mode or 'playlist3w' in mode:
                     nr_weeks = 3
 
                 for n in range(nr_weeks, 0, -1):
