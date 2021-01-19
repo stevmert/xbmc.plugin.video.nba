@@ -485,7 +485,7 @@ def reorder_streams(streams, home_team, visitor_team, in_a_hurry):
             has_national_commentators = True
             break
     #team preferences
-    # 0=always full, 1=full if against 1 otherwise condensed but keep full game if against 2 unless in hurry mode (after condensed), 2=condensed unless against 3, 3=highlights
+    # 0=always full, 1=full if against 1 otherwise condensed but keep full game if against 2 unless in hurry mode (after condensed), 2=condensed unless against 3/4, 3=highlights, 4=ignore
     #TODO: commentator preferences (if not in list, no preference; if in list, use index as rank) -> store in settings, how???
     #my own personal preferences...
     commentator_preferences = ["Heat", "Warriors", "Mavericks", "Hawks", "Nuggets"]
@@ -494,6 +494,10 @@ def reorder_streams(streams, home_team, visitor_team, in_a_hurry):
     pref_home = vars.team_preferences.get(home_team, 0)
     pref_visitor = vars.team_preferences.get(visitor_team, 0)
 
+    if pref_home+pref_visitor == 8:#ignore game, so remove all streams
+        for i in range(len(streams)-1, -1, -1):
+            del streams[i]
+        return
     only_highlights = pref_home+pref_visitor > 4
     only_condensed_and_highlights = pref_home == 2 and pref_visitor == 2
     full_after_condensed = (pref_home == 1 and pref_visitor > 1) or (pref_home > 1 and pref_visitor == 1) or (in_a_hurry and pref_home == 1 and pref_visitor == 1)

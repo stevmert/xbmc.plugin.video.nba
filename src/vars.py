@@ -24,8 +24,8 @@ for t in ['Hawks', 'Celtics', 'Nets', 'Hornets', 'Bulls', 'Cavaliers', 'Maverick
         value = int(json.loads(settings.getSetting(id=t)))
         if value < 0:
             value = 0
-        if value > 3:
-            value = 3
+        if value > 4:
+            value = 4
         team_preferences[t] = value
     except:
         team_preferences[t] = 0
